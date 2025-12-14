@@ -53,8 +53,11 @@ golangci-lint run --fix
 # Install oapi-codegen (when needed for Phase 4)
 go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@latest
 
+# Update OpenAPI specification (download latest)
+./tools/update-openapi.sh
+
 # Generate code from OpenAPI spec
-oapi-codegen -config oapi-codegen.yaml api/openapi.yaml
+oapi-codegen -config oapi-codegen.yaml api/openapi.json
 
 # Or use go generate (future)
 go generate ./tools
@@ -209,7 +212,9 @@ Key linters enabled (see .golangci.yml):
 
 ### Phase 4: Generated API Client
 
-Phase 4.1 has been completed with oapi-codegen configuration:
+**Completed**:
+- ✅ Phase 4.1: oapi-codegen configuration
+- ✅ Phase 4.2: OpenAPI specification download
 
 **Configuration File**: `oapi-codegen.yaml`
 - **Output**: `internal/gen/client.gen.go` (keeps generated code internal)
@@ -222,15 +227,26 @@ Phase 4.1 has been completed with oapi-codegen configuration:
   - `always-prefix-enum-values: true` - Prevent naming collisions
   - `embedded-spec: false` - Do not embed OpenAPI spec in binary (reduces size)
 
+**OpenAPI Specification**: `api/openapi.json`
+- **Source**: [freee/freee-api-schema](https://github.com/freee/freee-api-schema) (official repository)
+- **OpenAPI Version**: 3.0.1
+- **API Version**: v1.0
+- **API Title**: freee会計 API
+- **File Size**: 1.6MB
+- **Update Script**: `./tools/update-openapi.sh`
+
 **Usage**:
 ```bash
+# Update OpenAPI specification (download latest)
+./tools/update-openapi.sh
+
 # Generate code from OpenAPI spec
-oapi-codegen -config oapi-codegen.yaml api/openapi.yaml
+oapi-codegen -config oapi-codegen.yaml api/openapi.json
 ```
 
 **Next steps for Phase 4**:
-1. **OpenAPI Spec**: Download from https://developer.freee.co.jp/ → save to `api/openapi.yaml`
-2. **Validation**: Generated code must be version-controlled (not .gitignored)
+1. **Code Generation**: Run oapi-codegen to generate client code
+2. **Validation**: Verify generated code compiles and is version-controlled
 3. **Error Types**: Create `client/error.go` wrapping freee API errors
 
 ### Phase 5: Accounting Facade

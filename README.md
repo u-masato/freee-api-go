@@ -200,9 +200,19 @@ golangci-lint run
 # oapi-codegenのインストール
 go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@latest
 
+# OpenAPI仕様の更新（最新版をダウンロード）
+./tools/update-openapi.sh
+
 # コード生成
-go generate ./tools
+oapi-codegen -config oapi-codegen.yaml api/openapi.json
 ```
+
+**OpenAPI仕様**:
+- **ソース**: [freee/freee-api-schema](https://github.com/freee/freee-api-schema)
+- **OpenAPIバージョン**: 3.0.1
+- **API バージョン**: v1.0
+- **APIタイトル**: freee会計 API
+- **ファイル**: `api/openapi.json` (1.6MB)
 
 ## ドキュメント
 
@@ -237,6 +247,6 @@ freee APIの利用には freee の利用規約が適用されます。
 
 ---
 
-**開発状況**: 🚧 開発中（Phase 1完了、Phase 2以降実装予定）
+**開発状況**: 🚧 開発中（Phase 3完了、Phase 4進行中）
 
 最新の進捗: [TODO.md](TODO.md)

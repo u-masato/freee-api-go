@@ -2,7 +2,7 @@
 # This file configures code generation from the freee Accounting API OpenAPI specification.
 #
 # Usage:
-#   oapi-codegen -config oapi-codegen.yaml api/openapi.yaml
+#   oapi-codegen -config oapi-codegen.yaml api/openapi.json
 #
 # For more details, see: https://github.com/oapi-codegen/oapi-codegen
 
