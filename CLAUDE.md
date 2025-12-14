@@ -220,6 +220,7 @@ Phase 4.1 has been completed with oapi-codegen configuration:
   - `types: true` - Generate additional type definitions
   - `skip-prune: false` - Remove unused types to keep code minimal
   - `always-prefix-enum-values: true` - Prevent naming collisions
+  - `embedded-spec: false` - Do not embed OpenAPI spec in binary (reduces size)
 
 **Usage**:
 ```bash
