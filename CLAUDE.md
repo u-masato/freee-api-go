@@ -6,11 +6,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 freee-api-go is a Go SDK for the freee Accounting API (フリー会計API). The project implements OAuth2 authentication and provides a type-safe client library generated from OpenAPI specifications.
 
-**Current Status**: Phase 3 complete (see TODO.md for detailed progress)
+**Current Status**: Phase 4 complete (see TODO.md for detailed progress)
 - ✅ Phase 1: Project foundation
 - ✅ Phase 2: OAuth2 authentication
 - ✅ Phase 3: HTTP Transport layer
-- 🚧 Phase 4+: API client generation, Facade, documentation (pending)
+- ✅ Phase 4: Generated API Client
+- 🚧 Phase 5+: Facade, documentation (pending)
 
 ## Commands
 
@@ -48,19 +49,47 @@ golangci-lint run --timeout=5m
 golangci-lint run --fix
 ```
 
-### Code Generation (Phase 4+)
+### Makefile Commands
 ```bash
-# Install oapi-codegen (when needed for Phase 4)
+# Show available commands
+make help
+
+# Build all packages
+make build
+
+# Run all tests
+make test
+
+# Run linter
+make lint
+
+# Generate code from OpenAPI spec
+make generate
+
+# Update OpenAPI specification
+make update-openapi
+
+# Generate test coverage report
+make coverage
+
+# Clean build artifacts
+make clean
+```
+
+### Code Generation (Phase 4)
+```bash
+# Install oapi-codegen
 go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@latest
 
 # Update OpenAPI specification (download latest)
 ./tools/update-openapi.sh
+# or
+make update-openapi
 
 # Generate code from OpenAPI spec
-oapi-codegen -config oapi-codegen.yaml api/openapi.json
-
-# Or use go generate (future)
 go generate ./tools
+# or
+make generate
 ```
 
 ## Architecture
@@ -210,21 +239,22 @@ Key linters enabled (see .golangci.yml):
 
 ## Phase-Specific Guidance
 
-### Phase 4: Generated API Client
+### Phase 4: Generated API Client (COMPLETE)
 
 **Completed**:
 - ✅ Phase 4.1: oapi-codegen configuration
 - ✅ Phase 4.2: OpenAPI specification download
+- ✅ Phase 4.3: Code generation with oapi-codegen
+- ✅ Phase 4.4: freee API error types
+- ✅ Phase 4.5: Generated client tests
+- ✅ Phase 4.6: Tooling improvements (Makefile, scripts)
 
 **Configuration File**: `oapi-codegen.yaml`
-- **Output**: `internal/gen/client.gen.go` (keeps generated code internal)
+- **Output**: `internal/gen/client.gen.go` (~46,000 lines generated)
 - **Package**: `gen`
 - **Generation options**:
   - `models: true` - Generate type definitions for schemas
   - `client: true` - Generate HTTP client code
-  - `types: true` - Generate additional type definitions
-  - `skip-prune: false` - Remove unused types to keep code minimal
-  - `always-prefix-enum-values: true` - Prevent naming collisions
   - `embedded-spec: false` - Do not embed OpenAPI spec in binary (reduces size)
 
 **OpenAPI Specification**: `api/openapi.json`
@@ -235,19 +265,33 @@ Key linters enabled (see .golangci.yml):
 - **File Size**: 1.6MB
 - **Update Script**: `./tools/update-openapi.sh`
 
+**Excluded Endpoints** (due to oapi-codegen reference depth limitations):
+- `api/v1/account_items#upsert_by_code`
+- `api/v1/items#upsert_by_code`
+- `api/v1/sections#upsert_by_code`
+- `api/v1/partners#upsert_by_code`
+- `upsert_segment_tag`
+
+These endpoints use deeply nested inline schemas that exceed oapi-codegen's reference depth limit.
+They can be implemented manually in Phase 5 if needed.
+
+**Error Handling**: `client/error.go`
+- `FreeeError` type with structured error details
+- `ParseErrorResponse()` for parsing API error responses
+- Helper functions: `IsBadRequestError()`, `IsUnauthorizedError()`, etc.
+- Full test coverage
+
 **Usage**:
 ```bash
 # Update OpenAPI specification (download latest)
-./tools/update-openapi.sh
+make update-openapi
 
 # Generate code from OpenAPI spec
-oapi-codegen -config oapi-codegen.yaml api/openapi.json
-```
+make generate
 
-**Next steps for Phase 4**:
-1. **Code Generation**: Run oapi-codegen to generate client code
-2. **Validation**: Verify generated code compiles and is version-controlled
-3. **Error Types**: Create `client/error.go` wrapping freee API errors
+# Run tests
+make test
+```
 
 ### Phase 5: Accounting Facade
 
