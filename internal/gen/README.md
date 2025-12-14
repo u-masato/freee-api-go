@@ -108,3 +108,104 @@ oapi-codegen v2.5.1には、スキーマ参照の深度チェック機能があ�
 - **oapi-codegenバージョン**: v2.5.1
 - **OpenAPIバージョン**: 3.0.1
 - **freee API バージョン**: v1.0
+
+## トラブルシューティング
+
+### 同じエラーに遭遇した場合
+
+参照深度エラーが発生した場合の対処手順：
+
+1. **エラーメッセージから該当エンドポイントを特定**
+   ```
+   error turning reference (#/paths/~1api~11~1{endpoint}/...)
+   ```
+   パス内の`~1`は`/`を表すため、`~1api~11~1account_items`は`/api/1/account_items`
+
+2. **operation IDを確認**
+   ```bash
+   jq '.paths."/api/1/account_items/code/upsert".put.operationId' api/openapi.json
+   ```
+
+3. **除外リストに追加**
+   `tools/generate.go`の`-exclude-operation-ids`パラメータに追加
+
+4. **再生成**
+   ```bash
+   make generate
+   ```
+
+### 試行した解決策
+
+除外以外に試したアプローチと結果：
+
+| アプローチ | 結果 | 備考 |
+|----------|------|------|
+| 設定ファイルで除外 | ❌ 失敗 | `oapi-codegen.yaml`の`output-options`セクションでの除外は設定形式エラー |
+| コマンドライン除外 | ✅ 成功 | `-exclude-operation-ids`パラメータが機能 |
+| スキーマのみ生成 | ✅ 部分成功 | `-generate types`のみなら成功するが、clientコードが生成されない |
+| 最新版へのアップデート検討 | ⏳ 保留 | PR #1950がまだマージされていないため |
+
+### 再生成時の注意事項
+
+**重要**: コードを再生成する際は、必ず除外設定を維持してください。
+
+```bash
+# ✅ 正しい: 除外設定付きで再生成
+make generate
+
+# ❌ 誤り: 除外なしで直接実行（エラーになる）
+oapi-codegen -config oapi-codegen.yaml api/openapi.json
+```
+
+**設定確認方法**：
+```bash
+# tools/generate.goの内容を確認
+cat tools/generate.go | grep exclude-operation-ids
+```
+
+## 除外エンドポイントの代替利用
+
+除外された`upsert_by_code`エンドポイントの代わりに、ID指定のエンドポイントが利用可能です。
+
+### 例: 勘定科目の更新
+
+**除外されたエンドポイント（使用不可）**:
+```go
+// これは生成されていません
+// PUT /api/1/account_items/code/upsert
+```
+
+**代替方法1: IDで更新**:
+```go
+// 生成されたクライアントで利用可能
+// PUT /api/1/account_items/{id}
+resp, err := client.UpdateAccountItem(ctx, accountItemID, UpdateAccountItemJSONRequestBody{
+    CompanyId: companyID,
+    Name:      "更新後の勘定科目名",
+    // ... その他のフィールド
+})
+```
+
+**代替方法2: 取得してから更新**:
+```go
+// 1. コードで検索して取得
+items, err := client.GetAccountItems(ctx, &GetAccountItemsParams{
+    CompanyId: companyID,
+})
+// 2. コードで該当項目を探す
+// 3. IDで更新
+```
+
+### 必要に応じた手動実装（Phase 5）
+
+除外エンドポイントが必須の場合、Facade層で手動実装できます：
+
+```go
+// accounting/account_items.go（例）
+func (s *AccountItemsService) UpsertByCode(ctx context.Context, code string, params UpsertParams) error {
+    // 手動でHTTPリクエストを構築
+    // client/error.goでエラーハンドリング
+}
+```
+
+この実装は、生成されたクライアントと同じインターフェースで提供できます。
