@@ -1,0 +1,60 @@
+# oapi-codegen configuration for freee-api-go
+# This file configures code generation from the freee Accounting API OpenAPI specification.
+#
+# Usage:
+#   oapi-codegen -config oapi-codegen.yaml api/openapi.yaml
+#
+# For more details, see: https://github.com/oapi-codegen/oapi-codegen
+
+# Package name for generated code
+package: gen
+
+# Output file path (relative to project root)
+# Generated code will be placed in internal/gen/ to keep it internal-only
+output: internal/gen/client.gen.go
+
+# Generate options - controls what types of code are generated
+generate:
+  # models: Generate type definitions for schemas (request/response bodies, etc.)
+  models: true
+
+  # client: Generate HTTP client code with methods for each API operation
+  client: true
+
+  # types: Generate additional type definitions (enums, aliases, etc.)
+  types: true
+
+  # embedded-spec: Embed the OpenAPI spec in generated code for runtime access
+  # Set to false to reduce binary size
+  embedded-spec: false
+
+# Output options - controls code generation behavior
+output-options:
+  # skip-prune: If false, removes unused types from generated code
+  # Set to false to keep generated code minimal
+  skip-prune: false
+
+  # skip-fmt: If true, skips running gofmt on generated code
+  # Set to false to ensure generated code is properly formatted
+  skip-fmt: false
+
+  # user-templates: Path to custom templates directory (optional)
+  # Uncomment to use custom templates for generation
+  # user-templates: ./templates/oapi-codegen
+
+# Compatibility options
+compatibility:
+  # always-prefix-enum-values: If true, adds type prefix to enum values
+  # This prevents naming collisions (e.g., StatusActive vs Active)
+  always-prefix-enum-values: true
+
+# Import mapping - customize import paths for generated code
+# import-mapping:
+#   # Example: map specific OpenAPI schemas to existing types
+#   # "./schemas/time.yaml": github.com/yourusername/yourpackage/customtime
+
+# Type mappings - override default type generation for specific formats
+# Uncomment and customize as needed for freee API specific types
+# type-mappings:
+#   # Example: use custom type for date-time format
+#   # date-time: time.Time
