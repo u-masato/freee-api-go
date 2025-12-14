@@ -241,7 +241,7 @@ func (s *DealsService) Create(ctx context.Context, params gen.DealCreateParams) 
 //	if err != nil {
 //	    log.Fatal(err)
 //	}
-//	fmt.Printf("Updated deal ID: %d\n", deal.Id)
+//	fmt.Printf("Updated deal ID: %d\n", deal.Deal.Id)
 func (s *DealsService) Update(ctx context.Context, dealID int64, params gen.DealUpdateParams) (*gen.DealResponse, error) {
 	// Call the generated client
 	resp, err := s.genClient.UpdateDealWithResponse(ctx, dealID, params)
