@@ -9,7 +9,7 @@
 | Phase 1: プロジェクト基盤 | ✅ Completed | 7/7 |
 | Phase 2: OAuth2認証 | ✅ Completed | 7/7 |
 | Phase 3: HTTP Transport層 | ✅ Completed | 7/7 |
-| Phase 4: Generated API Client | 🔲 Not Started | 0/6 |
+| Phase 4: Generated API Client | 🔄 In Progress | 1/6 |
 | Phase 5: Accounting Facade | 🔲 Not Started | 0/8 |
 | Phase 6: ドキュメント・サンプル | 🔲 Not Started | 0/6 |
 | Phase 7: 拡張・改善 | 🔲 Not Started | 0/5 |
@@ -17,7 +17,7 @@
 **凡例**: 🔲 未着手 | 🔄 進行中 | ✅ 完了
 
 **最終更新**: 2025-12-14
-**現在のフェーズ**: Phase 3 完了 → Phase 4 準備中
+**現在のフェーズ**: Phase 4 開始（Phase 4.1 完了）
 
 ---
 
@@ -310,18 +310,25 @@ mkdir -p {client,auth,accounting,transport,internal/{gen,testutil},examples/{oau
 
 ---
 
-## Phase 4: Generated API Client（Code Generation）
+## Phase 4: Generated API Client（Code Generation） 🔄
 
 **目標**: OpenAPIからクライアント生成
 
-### 4.1 oapi-codegenテンプレート設定
+**ステータス**: 🔄 進行中（2025-12-14）
 
-- [ ] `oapi-codegen.yaml` 詳細設定
+### 4.1 oapi-codegenテンプレート設定 ✅
+
+- [x] `oapi-codegen.yaml` 詳細設定
   - models: true
   - client: true
   - types: true
   - skip-prune: false
-- [ ] カスタムテンプレート検討（必要に応じて）
+  - always-prefix-enum-values: true
+  - embedded-spec: false
+- [x] 設定ファイルのドキュメント化（コメント追加）
+- [x] CLAUDE.md に設定内容を記載
+
+**コミット**: 予定（Issue #7）
 
 ### 4.2 internal/gen/ コード生成
 
@@ -556,9 +563,9 @@ mkdir -p {client,auth,accounting,transport,internal/{gen,testutil},examples/{oau
 
 ### 🎯 Phase 4 次のタスク
 
-1. ⬜ OpenAPI仕様ファイル取得（`api/openapi.yaml`）
-2. ⬜ oapi-codegen セットアップ
-3. ⬜ コード生成設定（`oapi-codegen.yaml`）
+1. ✅ コード生成設定（`oapi-codegen.yaml`）- 完了
+2. ⬜ OpenAPI仕様ファイル取得（`api/openapi.yaml`）
+3. ⬜ oapi-codegen セットアップ
 4. ⬜ `internal/gen/` コード生成
 
 ---
@@ -574,4 +581,4 @@ mkdir -p {client,auth,accounting,transport,internal/{gen,testutil},examples/{oau
 ---
 
 **最終更新**: 2025-12-14
-**次のアクション**: Phase 4.1 OpenAPI仕様ファイル取得から開始
+**次のアクション**: Phase 4.2 OpenAPI仕様ファイル取得とコード生成

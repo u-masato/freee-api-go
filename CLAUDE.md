@@ -53,7 +53,10 @@ golangci-lint run --fix
 # Install oapi-codegen (when needed for Phase 4)
 go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@latest
 
-# Generate code from OpenAPI spec (future)
+# Generate code from OpenAPI spec
+oapi-codegen -config oapi-codegen.yaml api/openapi.yaml
+
+# Or use go generate (future)
 go generate ./tools
 ```
 
@@ -204,17 +207,30 @@ Key linters enabled (see .golangci.yml):
 
 ## Phase-Specific Guidance
 
-### Phase 4: Generated API Client (Next Phase)
+### Phase 4: Generated API Client
 
-When implementing Phase 4:
+Phase 4.1 has been completed with oapi-codegen configuration:
 
+**Configuration File**: `oapi-codegen.yaml`
+- **Output**: `internal/gen/client.gen.go` (keeps generated code internal)
+- **Package**: `gen`
+- **Generation options**:
+  - `models: true` - Generate type definitions for schemas
+  - `client: true` - Generate HTTP client code
+  - `types: true` - Generate additional type definitions
+  - `skip-prune: false` - Remove unused types to keep code minimal
+  - `always-prefix-enum-values: true` - Prevent naming collisions
+
+**Usage**:
+```bash
+# Generate code from OpenAPI spec
+oapi-codegen -config oapi-codegen.yaml api/openapi.yaml
+```
+
+**Next steps for Phase 4**:
 1. **OpenAPI Spec**: Download from https://developer.freee.co.jp/ → save to `api/openapi.yaml`
-2. **Configure oapi-codegen**: Create `oapi-codegen.yaml` with:
-   - Output: `internal/gen/`
-   - Package: `gen`
-   - Generate: models, client, types
-3. **Validation**: Generated code must be version-controlled (not .gitignored)
-4. **Error Types**: Create `client/error.go` wrapping freee API errors
+2. **Validation**: Generated code must be version-controlled (not .gitignored)
+3. **Error Types**: Create `client/error.go` wrapping freee API errors
 
 ### Phase 5: Accounting Facade
 
