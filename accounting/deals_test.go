@@ -403,3 +403,150 @@ func stringPtr(s string) *string {
 func int64Ptr(i int64) *int64 {
 	return &i
 }
+
+func TestDealsService_ListIter(t *testing.T) {
+	tests := []struct {
+		name        string
+		companyID   int64
+		opts        *ListDealsOptions
+		mockPages   []string
+		wantErr     bool
+		wantCount   int
+		wantFetches int
+	}{
+		{
+			name:      "single page iteration",
+			companyID: 1,
+			opts: &ListDealsOptions{
+				Type: stringPtr("expense"),
+			},
+			mockPages: []string{
+				`{
+					"deals": [
+						{"id": 1, "company_id": 1, "amount": 10000, "issue_date": "2024-01-15"},
+						{"id": 2, "company_id": 1, "amount": 20000, "issue_date": "2024-01-16"}
+					],
+					"meta": {"total_count": 2}
+				}`,
+			},
+			wantErr:     false,
+			wantCount:   2,
+			wantFetches: 1,
+		},
+		{
+			name:      "multiple page iteration",
+			companyID: 1,
+			opts: &ListDealsOptions{
+				Type:  stringPtr("expense"),
+				Limit: int64Ptr(2),
+			},
+			mockPages: []string{
+				// Page 1 (offset=0, limit=2)
+				`{
+					"deals": [
+						{"id": 1, "company_id": 1, "amount": 10000, "issue_date": "2024-01-15"},
+						{"id": 2, "company_id": 1, "amount": 20000, "issue_date": "2024-01-16"}
+					],
+					"meta": {"total_count": 5}
+				}`,
+				// Page 2 (offset=2, limit=2)
+				`{
+					"deals": [
+						{"id": 3, "company_id": 1, "amount": 30000, "issue_date": "2024-01-17"},
+						{"id": 4, "company_id": 1, "amount": 40000, "issue_date": "2024-01-18"}
+					],
+					"meta": {"total_count": 5}
+				}`,
+				// Page 3 (offset=4, limit=2)
+				`{
+					"deals": [
+						{"id": 5, "company_id": 1, "amount": 50000, "issue_date": "2024-01-19"}
+					],
+					"meta": {"total_count": 5}
+				}`,
+			},
+			wantErr:     false,
+			wantCount:   5,
+			wantFetches: 3,
+		},
+		{
+			name:      "empty result",
+			companyID: 1,
+			opts:      nil,
+			mockPages: []string{
+				`{
+					"deals": [],
+					"meta": {"total_count": 0}
+				}`,
+			},
+			wantErr:     false,
+			wantCount:   0,
+			wantFetches: 1,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fetchCount := 0
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if fetchCount < len(tt.mockPages) {
+					w.Header().Set("Content-Type", "application/json")
+					w.WriteHeader(http.StatusOK)
+					w.Write([]byte(tt.mockPages[fetchCount]))
+					fetchCount++
+				} else {
+					// Return empty page if we've exhausted mock pages
+					w.Header().Set("Content-Type", "application/json")
+					w.WriteHeader(http.StatusOK)
+					w.Write([]byte(`{"deals": [], "meta": {"total_count": 0}}`))
+				}
+			}))
+			defer server.Close()
+
+			// Create client
+			baseClient := client.NewClient(
+				client.WithBaseURL(server.URL),
+				client.WithHTTPClient(server.Client()),
+			)
+			accountingClient, err := NewClient(baseClient)
+			if err != nil {
+				t.Fatalf("NewClient() error = %v", err)
+			}
+
+			dealsService := accountingClient.Deals()
+
+			// Create iterator
+			iter := dealsService.ListIter(context.Background(), tt.companyID, tt.opts)
+
+			// Iterate through results
+			var deals []gen.Deal
+			for iter.Next() {
+				deals = append(deals, iter.Value())
+			}
+
+			// Check error
+			if err := iter.Err(); (err != nil) != tt.wantErr {
+				t.Errorf("ListIter() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			// Verify count
+			if len(deals) != tt.wantCount {
+				t.Errorf("ListIter() got %d deals, want %d", len(deals), tt.wantCount)
+			}
+
+			// Verify fetch count
+			if fetchCount != tt.wantFetches {
+				t.Errorf("ListIter() made %d fetches, want %d", fetchCount, tt.wantFetches)
+			}
+
+			// Verify deal IDs are sequential
+			for i, deal := range deals {
+				expectedID := int64(i + 1)
+				if deal.Id != expectedID {
+					t.Errorf("deal %d: expected ID %d, got %d", i, expectedID, deal.Id)
+				}
+			}
+		})
+	}
+}
