@@ -10,14 +10,14 @@
 | Phase 2: OAuth2認証 | ✅ Completed | 7/7 |
 | Phase 3: HTTP Transport層 | ✅ Completed | 7/7 |
 | Phase 4: Generated API Client | ✅ Completed | 7/7 |
-| Phase 5: Accounting Facade | 🔲 Not Started | 0/8 |
+| Phase 5: Accounting Facade | 🔄 In Progress | 3/8 |
 | Phase 6: ドキュメント・サンプル | 🔲 Not Started | 0/6 |
 | Phase 7: 拡張・改善 | 🔲 Not Started | 0/5 |
 
 **凡例**: 🔲 未着手 | 🔄 進行中 | ✅ 完了
 
 **最終更新**: 2025-12-14
-**現在のフェーズ**: Phase 4 完了 / Phase 5 準備
+**現在のフェーズ**: Phase 5 進行中（5.1-5.3 完了）
 
 ---
 
@@ -396,37 +396,73 @@ mkdir -p {client,auth,accounting,transport,internal/{gen,testutil},examples/{oau
 
 ---
 
-## Phase 5: Accounting Facade（User-Facing API）
+## Phase 5: Accounting Facade（User-Facing API） 🔄
 
 **目標**: 使いやすいFacade API提供
 
-### 5.1 client/ パッケージ設計（Client構造体）
+**ステータス**: 🔄 進行中（2025-12-14）
 
-- [ ] `client/client.go` 作成
-- [ ] `Client` 構造体定義
+### 5.1 client/ パッケージ設計（Client構造体） ✅
+
+- [x] `client/client.go` 作成
+- [x] `Client` 構造体定義
   - HTTPClient
   - BaseURL
   - TokenSource
-- [ ] `NewClient(opts ...Option)` 実装
-- [ ] `Option` パターン実装
+  - UserAgent
+  - Context
+- [x] `NewClient(opts ...Option)` 実装
+- [x] `Option` パターン実装
+  - WithHTTPClient
+  - WithBaseURL
+  - WithTokenSource
+  - WithUserAgent
+  - WithContext
+- [x] `Do(req)` メソッド実装
+- [x] 包括的なユニットテスト作成
 
-### 5.2 accounting/ Facade設計
+**コミット**: `23685a8` (PR #35) - Implement Phase 5.1: Client structure and options pattern
 
-- [ ] `accounting/client.go` 作成
-- [ ] `AccountingClient` 構造体定義
-- [ ] サービスごとのサブクライアント設計
-  - `DealsService`
-  - `JournalsService`
-  - `PartnersService`
+### 5.2 accounting/ Facade設計 ✅
 
-### 5.3 取引（Deals）API実装
+- [x] `accounting/client.go` 作成
+- [x] `AccountingClient` 構造体定義
+- [x] サービスごとのサブクライアント設計
+  - `DealsService` - 取引
+  - `JournalsService` - 仕訳
+  - `WalletTxnService` - 口座明細
+  - `TransfersService` - 取引（振替）
+- [x] `accounting/services.go` 作成（サービス構造体定義）
+- [x] 遅延初期化（Lazy initialization）実装
+- [x] ClientWithResponses 統合（自動レスポンス解析）
+- [x] 包括的なユニットテスト作成（8テスト成功）
 
-- [ ] `accounting/deals.go` 作成
-- [ ] `DealsService.List(ctx, opts)` 実装
-- [ ] `DealsService.Get(ctx, id)` 実装
-- [ ] `DealsService.Create(ctx, deal)` 実装
-- [ ] `DealsService.Update(ctx, id, deal)` 実装
-- [ ] `DealsService.Delete(ctx, id)` 実装
+**コミット**: `8136d35` (PR #37) - Implement Phase 5.2: Design Accounting Facade architecture
+
+### 5.3 取引（Deals）API実装 ✅
+
+- [x] `accounting/deals.go` 作成
+- [x] `DealsService.List(ctx, opts)` 実装
+  - 柔軟なフィルタリングオプション
+  - ページネーション対応（offset/limit）
+  - ListDealsOptions 型定義
+- [x] `DealsService.Get(ctx, companyID, id, opts)` 実装
+  - Accruals 表示制御
+  - GetDealOptions 型定義
+- [x] `DealsService.Create(ctx, params)` 実装
+  - DealCreateParams 使用
+  - 適切なエラーハンドリング
+- [x] `DealsService.Update(ctx, id, params)` 実装
+  - DealUpdateParams 使用
+  - 部分更新対応
+- [x] `DealsService.Delete(ctx, companyID, id)` 実装
+  - 適切なステータスコード処理
+- [x] `accounting/deals_test.go` 作成
+  - 13テスト全て成功
+  - httptest.Server でモック
+  - 全CRUD操作の検証
+
+**コミット**: `3aa77c7` (PR #38) - Implement Phase 5.3: Deals API implementation
 
 ### 5.4 仕訳（Journals）API実装
 
@@ -588,12 +624,25 @@ mkdir -p {client,auth,accounting,transport,internal/{gen,testutil},examples/{oau
 6. ✅ `transport/useragent.go` 作成（User-Agent）
 7. ✅ 包括的なテスト作成（42テスト全て成功）
 
-### 🎯 Phase 4 次のタスク
+### ✅ Phase 4 完了（2025-12-14）
 
 1. ✅ コード生成設定（`oapi-codegen.yaml`）- 完了（Issue #7）
 2. ✅ OpenAPI仕様ファイル取得（`api/openapi.json`）- 完了（Issue #8）
-3. ⬜ oapi-codegen セットアップ・実行
-4. ⬜ `internal/gen/` コード生成と検証
+3. ✅ oapi-codegen セットアップ・実行
+4. ✅ `internal/gen/` コード生成と検証
+5. ✅ エラー型定義とテスト
+6. ✅ Makefile・スクリプト整備
+
+### 🎯 Phase 5 次のタスク
+
+1. ✅ Client構造体とオプションパターン実装 - 完了（Issue #13, PR #35）
+2. ✅ AccountingClient Facade設計 - 完了（Issue #14, PR #37）
+3. ✅ Deals API全CRUD操作実装 - 完了（Issue #15, PR #38）
+4. ⬜ Journals API実装（Phase 5.4）
+5. ⬜ Partners API実装（Phase 5.5）
+6. ⬜ ページング実装（Phase 5.6）
+7. ⬜ ユニットテスト充実（Phase 5.7）
+8. ⬜ 統合テスト作成（Phase 5.8）
 
 ---
 
@@ -608,4 +657,4 @@ mkdir -p {client,auth,accounting,transport,internal/{gen,testutil},examples/{oau
 ---
 
 **最終更新**: 2025-12-14
-**次のアクション**: Phase 4.3 oapi-codegen実行とコード生成
+**次のアクション**: Phase 5.4 Journals API実装、または Phase 5.6 ページング実装

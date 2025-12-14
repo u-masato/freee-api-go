@@ -42,8 +42,8 @@ type Client struct {
 	// client is the base freee API client
 	client *client.Client
 
-	// genClient is the generated OpenAPI client
-	genClient *gen.Client
+	// genClient is the generated OpenAPI client with response handling
+	genClient *gen.ClientWithResponses
 
 	// Service clients (lazy initialization)
 	deals     *DealsService
@@ -64,8 +64,8 @@ type Client struct {
 //	)
 //	accountingClient := accounting.NewClient(baseClient)
 func NewClient(c *client.Client) (*Client, error) {
-	// Create the generated client with the base client's configuration
-	genClient, err := gen.NewClient(
+	// Create the generated client with response handling
+	genClient, err := gen.NewClientWithResponses(
 		c.BaseURL(),
 		gen.WithHTTPClient(c.HTTPClient()),
 	)
@@ -159,11 +159,11 @@ func (c *Client) BaseClient() *client.Client {
 	return c.client
 }
 
-// GenClient returns the underlying generated API client.
+// GenClient returns the underlying generated API client with response handling.
 //
 // This is intended for advanced use cases or when the facade
 // doesn't yet provide a specific operation. Use with caution
 // as this exposes the internal generated API.
-func (c *Client) GenClient() *gen.Client {
+func (c *Client) GenClient() *gen.ClientWithResponses {
 	return c.genClient
 }
