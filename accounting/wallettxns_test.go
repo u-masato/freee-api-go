@@ -333,3 +333,118 @@ func TestWalletTxnService_Delete(t *testing.T) {
 		})
 	}
 }
+
+func TestWalletTxnService_ListIter(t *testing.T) {
+	tests := []struct {
+		name        string
+		companyID   int64
+		opts        *ListWalletTxnsOptions
+		mockPages   []string
+		wantErr     bool
+		wantCount   int
+		wantFetches int
+	}{
+		{
+			name:      "single page iteration",
+			companyID: 1,
+			opts:      nil,
+			mockPages: []string{
+				`{
+					"wallet_txns": [
+						{"id": 1, "company_id": 1, "amount": 10000, "date": "2024-01-15"},
+						{"id": 2, "company_id": 1, "amount": 20000, "date": "2024-01-16"}
+					]
+				}`,
+				`{"wallet_txns": []}`,
+			},
+			wantErr:     false,
+			wantCount:   2,
+			wantFetches: 2,
+		},
+		{
+			name:      "multiple page iteration",
+			companyID: 1,
+			opts: &ListWalletTxnsOptions{
+				Limit: int64Ptr(2),
+			},
+			mockPages: []string{
+				`{
+					"wallet_txns": [
+						{"id": 1, "company_id": 1, "amount": 10000, "date": "2024-01-15"},
+						{"id": 2, "company_id": 1, "amount": 20000, "date": "2024-01-16"}
+					]
+				}`,
+				`{
+					"wallet_txns": [
+						{"id": 3, "company_id": 1, "amount": 30000, "date": "2024-01-17"}
+					]
+				}`,
+				`{"wallet_txns": []}`,
+			},
+			wantErr:     false,
+			wantCount:   3,
+			wantFetches: 3,
+		},
+		{
+			name:      "empty result",
+			companyID: 1,
+			opts:      nil,
+			mockPages: []string{
+				`{"wallet_txns": []}`,
+			},
+			wantErr:     false,
+			wantCount:   0,
+			wantFetches: 1,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fetchCount := 0
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if fetchCount < len(tt.mockPages) {
+					w.Header().Set("Content-Type", "application/json")
+					w.WriteHeader(http.StatusOK)
+					w.Write([]byte(tt.mockPages[fetchCount]))
+					fetchCount++
+				} else {
+					w.Header().Set("Content-Type", "application/json")
+					w.WriteHeader(http.StatusOK)
+					w.Write([]byte(`{"wallet_txns": []}`))
+				}
+			}))
+			defer server.Close()
+
+			baseClient := client.NewClient(
+				client.WithBaseURL(server.URL),
+				client.WithHTTPClient(server.Client()),
+			)
+			accountingClient, err := NewClient(baseClient)
+			if err != nil {
+				t.Fatalf("NewClient() error = %v", err)
+			}
+
+			walletTxnService := accountingClient.WalletTxns()
+
+			iter := walletTxnService.ListIter(context.Background(), tt.companyID, tt.opts)
+
+			var txns []gen.WalletTxn
+			for iter.Next() {
+				txns = append(txns, iter.Value())
+			}
+
+			if err := iter.Err(); (err != nil) != tt.wantErr {
+				t.Errorf("ListIter() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			if len(txns) != tt.wantCount {
+				t.Errorf("ListIter() got %d transactions, want %d", len(txns), tt.wantCount)
+			}
+
+			if fetchCount != tt.wantFetches {
+				t.Errorf("ListIter() made %d fetches, want %d", fetchCount, tt.wantFetches)
+			}
+		})
+	}
+}

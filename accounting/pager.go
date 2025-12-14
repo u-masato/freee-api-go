@@ -114,8 +114,8 @@ func (p *pager[T]) Next() bool {
 		return true
 	}
 
-	// Check if we've already fetched all pages
-	if p.fetchedOnce && p.offset >= p.totalCount {
+	// Check if we've already fetched all pages (only if totalCount is known and > 0)
+	if p.fetchedOnce && p.totalCount > 0 && p.offset >= p.totalCount {
 		return false
 	}
 
