@@ -89,7 +89,7 @@ freee Public API
 
 ## 5. パッケージ構成（Proposed Structure）
 
-freee/
+freee-api-go/
 ├─ client/            # 公開API（Client, Options, Error）
 ├─ auth/              # OAuth2（認可URL, トークン取得/更新）
 ├─ accounting/        # 会計API Facade
@@ -97,10 +97,36 @@ freee/
 │   ├─ journals.go
 │   ├─ partners.go
 │   └─ …
-├─ transport/         # HTTPミドルウェア
+├─ transport/         # HTTPミドルウェア（Retry, RateLimit, Logging）
 ├─ internal/
-│   └─ gen/           # OpenAPI生成コード（非公開）
-└─ tools/             # OpenAPI生成スクリプト
+│   ├─ gen/           # OpenAPI生成コード（非公開）
+│   └─ testutil/      # テストユーティリティ
+├─ examples/          # サンプルコード
+│   ├─ oauth/
+│   ├─ basic/
+│   └─ advanced/
+└─ tools/             # OpenAPI生成・管理スクリプト
+
+### 5.1 OpenAPI仕様の取得
+
+freee APIのOpenAPI仕様は以下から取得:
+
+- freee公式ドキュメント: https://developer.freee.co.jp/
+- OpenAPI Specification (v3): 公式サイトから最新版をダウンロード
+- tools/スクリプトで自動取得・バージョン管理
+
+### 5.2 技術スタック（Technology Stack）
+
+| カテゴリ | 選定技術 | 用途 |
+|---------|---------|------|
+| OpenAPIジェネレーター | [oapi-codegen](https://github.com/oapi-codegen/oapi-codegen) | Go構造体・クライアント生成 |
+| OAuth2ライブラリ | [golang.org/x/oauth2](https://pkg.go.dev/golang.org/x/oauth2) | OAuth2フロー実装 |
+| HTTPクライアント | net/http (標準ライブラリ) | API通信 |
+| レート制限 | [golang.org/x/time/rate](https://pkg.go.dev/golang.org/x/time/rate) | トークンバケット実装 |
+| リトライ | [hashicorp/go-retryablehttp](https://github.com/hashicorp/go-retryablehttp) | 自動リトライ |
+| テスト | httptest (標準), testify | モックサーバー・アサーション |
+| Linter | golangci-lint | 静的解析 |
+| CI/CD | GitHub Actions | ビルド・テスト・リリース |
 
 ---
 
@@ -128,11 +154,42 @@ freee/
 
 ## 7. 非機能要件（Non-Functional Requirements）
 
-- Go Modules対応
+### 7.1 コード品質
+
+- Go Modules対応（go 1.21+）
 - GoDocによるAPIドキュメント生成
-- ユニットテスト（httptest.Server活用）
-- CIでのOpenAPI差分検知
-- セキュリティ考慮（Secret非出力）
+- golangci-lint による静的解析
+- コードカバレッジ 80%以上を目標
+
+### 7.2 テスト戦略
+
+| テスト種別 | 手法 | 対象 |
+|----------|------|------|
+| ユニットテスト | httptest.Server | 各パッケージ |
+| 統合テスト | モックサーバー | エンドツーエンド |
+| 契約テスト | OpenAPI Validation | APIレスポンス検証 |
+| セキュリティテスト | go-sec | 脆弱性スキャン |
+
+**モック方針:**
+- internal/testutil でテスト用ヘルパー提供
+- httptest.Server で freee API をモック
+- golden file パターンでレスポンス管理
+
+### 7.3 CI/CD パイプライン
+
+**GitHub Actions ワークフロー:**
+- **Lint**: golangci-lint実行
+- **Test**: ユニットテスト・カバレッジレポート
+- **Build**: マルチOS（Linux, macOS, Windows）ビルド検証
+- **OpenAPI Check**: スキーマ差分検知・自動PR作成
+- **Release**: セマンティックバージョニング・自動リリース
+
+### 7.4 セキュリティ
+
+- トークン・シークレットのログ出力抑制
+- 環境変数からの認証情報読み込み
+- TLS 1.2+ 必須
+- 依存ライブラリの脆弱性スキャン（dependabot）
 
 ---
 
@@ -147,14 +204,158 @@ freee/
 ## 9. 今後の展開（Future Work）
 
 - キャッシュレイヤの公式サポート
+- 請求書API・HR API対応
+- Webhook受信サポート
+- メトリクス・トレーシング統合（OpenTelemetry）
 
 ---
 
-## 10. まとめ
+## 10. 実装フェーズ（Implementation Phases）
 
-本プロジェクトは、  
-**「OpenAPI × Go × OAuth2」を前提とした、実運用に耐えるfreee APIクライアントのリファレンス実装**  
+### Phase 1: プロジェクト基盤（Foundation）
+
+**目標**: 開発環境・ビルド基盤の構築
+
+- [ ] リポジトリ初期化（go.mod, .gitignore, LICENSE）
+- [ ] ディレクトリ構造作成
+- [ ] GitHub Actions CI/CD設定
+- [ ] golangci-lint設定
+- [ ] OpenAPI仕様ファイル取得
+- [ ] oapi-codegen セットアップ
+- [ ] README.md基本構造
+
+**成果物**: ビルド可能な空プロジェクト
+
+### Phase 2: OAuth2認証（Authentication）
+
+**目標**: freee OAuth2フロー実装
+
+- [ ] auth/ パッケージ構造設計
+- [ ] 認可URL生成機能
+- [ ] アクセストークン取得
+- [ ] リフレッシュトークン処理
+- [ ] TokenSource実装
+- [ ] ユニットテスト（モック）
+- [ ] examples/oauth/ サンプル作成
+
+**成果物**: 認証可能なライブラリ
+
+### Phase 3: HTTP Transport層（Transport）
+
+**目標**: 共通HTTP処理の実装
+
+- [ ] transport/ パッケージ設計
+- [ ] カスタムRoundTripper実装
+- [ ] レート制限（rate.Limiter統合）
+- [ ] リトライロジック
+- [ ] ロギング（構造化ログ）
+- [ ] User-Agent付与
+- [ ] ユニットテスト
+
+**成果物**: 堅牢なHTTP通信基盤
+
+### Phase 4: Generated API Client（Code Generation）
+
+**目標**: OpenAPIからクライアント生成
+
+- [ ] oapi-codegenテンプレート設定
+- [ ] internal/gen/ コード生成
+- [ ] 生成コードの検証
+- [ ] エラー型定義（freee APIエラー）
+- [ ] 基本的なAPI呼び出しテスト
+- [ ] 生成スクリプト整備（tools/）
+
+**成果物**: 会計API呼び出し可能なクライアント
+
+### Phase 5: Accounting Facade（User-Facing API）
+
+**目標**: 使いやすいFacade API提供
+
+- [ ] client/ パッケージ設計（Client構造体）
+- [ ] accounting/ Facade設計
+- [ ] 取引（Deals）API実装
+- [ ] 仕訳（Journals）API実装
+- [ ] 取引先（Partners）API実装
+- [ ] ページング実装（Iterator/Pager）
+- [ ] ユニットテスト
+- [ ] 統合テスト（E2E with mock）
+
+**成果物**: v0.1.0リリース候補
+
+### Phase 6: ドキュメント・サンプル（Documentation）
+
+**目標**: ユーザー向けドキュメント整備
+
+- [ ] GoDoc コメント充実
+- [ ] README.md完全版
+- [ ] examples/ 複数パターン
+- [ ] CONTRIBUTING.md
+- [ ] セキュリティポリシー（SECURITY.md）
+- [ ] APIリファレンス生成
+
+**成果物**: v0.1.0正式リリース
+
+### Phase 7: 拡張・改善（Enhancement）
+
+**目標**: フィードバック反映・機能拡充
+
+- [ ] パフォーマンス最適化
+- [ ] より多くの会計API対応
+- [ ] キャッシュ機能（オプション）
+- [ ] メトリクス収集
+- [ ] コミュニティフィードバック対応
+
+**成果物**: v0.2.0+
+
+---
+
+## 11. ライセンス・公開方針（License & Publishing）
+
+### ライセンス
+
+- **MIT License** を採用
+  - 商用利用可能
+  - 改変・再配布自由
+  - 責任免責
+
+### 公開戦略
+
+- GitHub上でオープンソースとして公開
+- pkg.go.devでドキュメント自動公開
+- Semantic Versioning準拠
+- リリースノート自動生成
+- issueテンプレート・PR テンプレート整備
+
+### コントリビューション
+
+- CONTRIBUTING.md でガイドライン明示
+- Code of Conduct 設定
+- issue/PR歓迎のスタンス
+
+---
+
+## 12. まとめ
+
+本プロジェクトは、
+**「OpenAPI × Go × OAuth2」を前提とした、実運用に耐えるfreee APIクライアントのリファレンス実装**
 を目指す。
 
-SDKとしての完成度・保守性・可読性を重視し、  
-初学者が読んでも理解でき、実務でそのまま使える設計を採用する。
+### 重視する価値
+
+1. **実用性**: 実務でそのまま使える機能・設計
+2. **保守性**: OpenAPI変更への追従性、明確な責務分離
+3. **可読性**: 初学者でも理解できるコード・ドキュメント
+4. **安全性**: OAuth2セキュリティ、エラーハンドリング、テスト
+5. **拡張性**: 新機能追加が容易なアーキテクチャ
+
+### 成功基準
+
+- ✅ freee会計APIをGoから簡単に呼び出せる
+- ✅ OAuth2フローが安全・確実に動作する
+- ✅ レート制限・リトライが自動で処理される
+- ✅ ページングが透過的に扱える
+- ✅ エラーが適切に処理・報告される
+- ✅ テストカバレッジ80%以上
+- ✅ 充実したドキュメント・サンプル
+
+本計画に基づき、段階的に実装を進める。
