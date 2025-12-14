@@ -89,8 +89,9 @@ func (s *TransfersService) List(ctx context.Context, companyID int64, opts *List
 //
 // Example:
 //
+//	startDate := "2024-01-01"
 //	opts := &accounting.ListTransfersOptions{
-//	    StartDate: stringPtr("2024-01-01"),
+//	    StartDate: &startDate,
 //	}
 //	iter := transfersService.ListIter(ctx, companyID, opts)
 //	for iter.Next() {

@@ -294,8 +294,9 @@ func (s *DealsService) Delete(ctx context.Context, companyID int64, dealID int64
 //
 // Example:
 //
+//	typ := "expense"
 //	opts := &accounting.ListDealsOptions{
-//	    Type: stringPtr("expense"),
+//	    Type: &typ,
 //	}
 //	iter := dealsService.ListIter(ctx, companyID, opts)
 //	for iter.Next() {

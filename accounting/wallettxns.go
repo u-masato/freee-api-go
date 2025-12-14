@@ -112,8 +112,9 @@ func (s *WalletTxnService) List(ctx context.Context, companyID int64, opts *List
 //
 // Example:
 //
+//	walletType := "bank_account"
 //	opts := &accounting.ListWalletTxnsOptions{
-//	    WalletableType: stringPtr("bank_account"),
+//	    WalletableType: &walletType,
 //	}
 //	iter := walletTxnService.ListIter(ctx, companyID, opts)
 //	for iter.Next() {

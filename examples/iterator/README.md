@@ -41,7 +41,7 @@ go run main.go
 ### Basic Iteration
 
 ```go
-iter := accountingClient.Deals.ListIter(ctx, companyID, opts)
+iter := accountingClient.Deals().ListIter(ctx, companyID, opts)
 for iter.Next() {
     deal := iter.Value()
     fmt.Printf("Deal ID: %d, Amount: %d\n", deal.Id, deal.Amount)
@@ -55,17 +55,18 @@ if err := iter.Err(); err != nil {
 
 ```go
 limit := int64(50)
+expenseType := "expense"
 opts := &accounting.ListDealsOptions{
-    Type:  stringPtr("expense"),
+    Type:  &expenseType,
     Limit: &limit, // Fetch 50 items per page
 }
-iter := accountingClient.Deals.ListIter(ctx, companyID, opts)
+iter := accountingClient.Deals().ListIter(ctx, companyID, opts)
 ```
 
 ### Early Termination
 
 ```go
-iter := accountingClient.Deals.ListIter(ctx, companyID, opts)
+iter := accountingClient.Deals().ListIter(ctx, companyID, opts)
 count := 0
 for iter.Next() {
     deal := iter.Value()
@@ -83,7 +84,7 @@ if err := iter.Err(); err != nil {
 ### Filter and Aggregate
 
 ```go
-iter := accountingClient.Deals.ListIter(ctx, companyID, opts)
+iter := accountingClient.Deals().ListIter(ctx, companyID, opts)
 total := int64(0)
 for iter.Next() {
     deal := iter.Value()

@@ -263,8 +263,9 @@ func (s *JournalsService) List(ctx context.Context, companyID int64, opts *ListM
 //
 // Example:
 //
+//	startDate := "2024-01-01"
 //	opts := &accounting.ListManualJournalsOptions{
-//	    StartIssueDate: stringPtr("2024-01-01"),
+//	    StartIssueDate: &startDate,
 //	}
 //	iter := journalsService.ListIter(ctx, companyID, opts)
 //	for iter.Next() {
