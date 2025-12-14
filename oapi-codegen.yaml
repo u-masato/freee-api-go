@@ -20,7 +20,8 @@ generate:
   embedded-spec: false
 
 # Exclude operations with known issues (reference depth problems)
-# These operations use inline schemas with deep nesting that exceed oapi-codegen limitations
+# These operations use inline schemas with deep nesting that exceed oapi-codegen limitations.
+# See internal/gen/README.md for more details and workarounds.
 output-options:
   exclude-operation-ids:
     - "api/v1/account_items#upsert_by_code"
