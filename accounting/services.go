@@ -20,7 +20,7 @@ import (
 //	// Future: deal, err := deals.Get(ctx, companyID, dealID)
 type DealsService struct {
 	client    *client.Client
-	genClient *gen.Client
+	genClient *gen.ClientWithResponses
 }
 
 // JournalsService provides operations for managing journals (仕訳).
@@ -37,7 +37,7 @@ type DealsService struct {
 //	// Future: manualJournals, err := journals.ListManual(ctx, companyID, nil)
 type JournalsService struct {
 	client    *client.Client
-	genClient *gen.Client
+	genClient *gen.ClientWithResponses
 }
 
 // WalletTxnService provides operations for managing wallet transactions (口座明細).
@@ -55,7 +55,7 @@ type JournalsService struct {
 //	// Future: txn, err := walletTxns.Get(ctx, companyID, txnID)
 type WalletTxnService struct {
 	client    *client.Client
-	genClient *gen.Client
+	genClient *gen.ClientWithResponses
 }
 
 // TransfersService provides operations for managing transfers (取引（振替）).
@@ -73,5 +73,5 @@ type WalletTxnService struct {
 //	// Future: transfer, err := transfers.Get(ctx, companyID, transferID)
 type TransfersService struct {
 	client    *client.Client
-	genClient *gen.Client
+	genClient *gen.ClientWithResponses
 }
