@@ -35,6 +35,10 @@ go.work
 .env.local
 .env.*.local
 
+# OAuth2 tokens (sensitive)
+token.json
+**/token.json
+
 # Test coverage
 coverage.txt
 coverage.html
