@@ -9,7 +9,7 @@
 | Phase 1: プロジェクト基盤 | ✅ Completed | 7/7 |
 | Phase 2: OAuth2認証 | ✅ Completed | 7/7 |
 | Phase 3: HTTP Transport層 | ✅ Completed | 7/7 |
-| Phase 4: Generated API Client | 🔄 In Progress | 1/6 |
+| Phase 4: Generated API Client | 🔄 In Progress | 2/7 |
 | Phase 5: Accounting Facade | 🔲 Not Started | 0/8 |
 | Phase 6: ドキュメント・サンプル | 🔲 Not Started | 0/6 |
 | Phase 7: 拡張・改善 | 🔲 Not Started | 0/5 |
@@ -64,14 +64,15 @@ mkdir -p {client,auth,accounting,transport,internal/{gen,testutil},examples/{oau
   - 除外設定: internal/gen/*（生成コード）
 - [ ] ローカル実行確認（`golangci-lint run`） ※コードが無いため次フェーズで確認
 
-### 1.5 OpenAPI仕様ファイル取得 ⏭️
+### 1.5 OpenAPI仕様ファイル取得 ✅
 
-- [ ] freee開発者ポータルから会計API OpenAPI v3仕様をダウンロード
-- [ ] `api/openapi.yaml` として保存
-- [ ] バージョン情報を README.md に記載
-- [ ] `tools/update-openapi.sh` スクリプト作成（自動更新用）
+- [x] freee公式リポジトリから会計API OpenAPI v3仕様をダウンロード
+- [x] `api/openapi.json` として保存 (1.6MB)
+- [x] バージョン情報を README.md に記載
+- [x] `tools/update-openapi.sh` スクリプト作成（自動更新用）
 
-**注**: Phase 4で実施予定（コード生成フェーズ）
+**コミット**: 予定（Issue #8）
+**ソース**: https://github.com/freee/freee-api-schema
 
 ### 1.6 oapi-codegen セットアップ ⏭️
 
@@ -328,23 +329,33 @@ mkdir -p {client,auth,accounting,transport,internal/{gen,testutil},examples/{oau
 - [x] 設定ファイルのドキュメント化（コメント追加）
 - [x] CLAUDE.md に設定内容を記載
 
-**コミット**: 予定（Issue #7）
+**コミット**: `0b677af` (PR #32)
 
-### 4.2 internal/gen/ コード生成
+### 4.2 OpenAPI仕様ファイル取得 ✅
 
-- [ ] `go generate ./tools` 実行
+- [x] freee公式リポジトリから会計API OpenAPI v3仕様をダウンロード
+- [x] `api/openapi.json` として保存 (1.6MB, OpenAPI 3.0.1, API v1.0)
+- [x] バージョン情報を README.md に記載
+- [x] `tools/update-openapi.sh` スクリプト作成（自動更新用）
+
+**コミット**: 予定（Issue #8）
+**ソース**: https://github.com/freee/freee-api-schema
+
+### 4.3 internal/gen/ コード生成
+
+- [ ] `oapi-codegen` 実行
 - [ ] 生成コードレビュー
   - 構造体定義確認
   - メソッドシグネチャ確認
 - [ ] 生成コードを `.gitignore` から除外（バージョン管理対象）
 
-### 4.3 生成コードの検証
+### 4.4 生成コードの検証
 
 - [ ] 型安全性確認
 - [ ] JSON タグ確認
 - [ ] 必須フィールド検証
 
-### 4.4 エラー型定義（freee APIエラー）
+### 4.5 エラー型定義（freee APIエラー）
 
 - [ ] `client/error.go` 作成
 - [ ] `FreeeError` 構造体定義
@@ -353,16 +364,16 @@ mkdir -p {client,auth,accounting,transport,internal/{gen,testutil},examples/{oau
   - freee APIエラーコード
 - [ ] `Error()` メソッド実装
 
-### 4.5 基本的なAPI呼び出しテスト
+### 4.6 基本的なAPI呼び出しテスト
 
 - [ ] httptest.Server で freee API モック
 - [ ] 生成クライアントで呼び出し
 - [ ] レスポンスデシリアライズ確認
 
-### 4.6 生成スクリプト整備（tools/）
+### 4.7 生成スクリプト整備（tools/）
 
-- [ ] `tools/generate.go` 改善
-- [ ] `tools/update-openapi.sh` 改善
+- [x] `tools/update-openapi.sh` 作成（完了 - Issue #8）
+- [ ] `tools/generate.go` 作成（`//go:generate` ディレクティブ）
 - [ ] Makefile 作成（`make generate`, `make test` など）
 
 **Phase 4 完了条件**: 生成コードで freee API を呼び出せること
@@ -563,10 +574,10 @@ mkdir -p {client,auth,accounting,transport,internal/{gen,testutil},examples/{oau
 
 ### 🎯 Phase 4 次のタスク
 
-1. ✅ コード生成設定（`oapi-codegen.yaml`）- 完了
-2. ⬜ OpenAPI仕様ファイル取得（`api/openapi.yaml`）
-3. ⬜ oapi-codegen セットアップ
-4. ⬜ `internal/gen/` コード生成
+1. ✅ コード生成設定（`oapi-codegen.yaml`）- 完了（Issue #7）
+2. ✅ OpenAPI仕様ファイル取得（`api/openapi.json`）- 完了（Issue #8）
+3. ⬜ oapi-codegen セットアップ・実行
+4. ⬜ `internal/gen/` コード生成と検証
 
 ---
 
@@ -581,4 +592,4 @@ mkdir -p {client,auth,accounting,transport,internal/{gen,testutil},examples/{oau
 ---
 
 **最終更新**: 2025-12-14
-**次のアクション**: Phase 4.2 OpenAPI仕様ファイル取得とコード生成
+**次のアクション**: Phase 4.3 oapi-codegen実行とコード生成
