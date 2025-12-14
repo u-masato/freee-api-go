@@ -1,8 +1,8 @@
 # freee-api-go
 
-[![CI](https://github.com/muno/freee-api-go/actions/workflows/ci.yml/badge.svg)](https://github.com/muno/freee-api-go/actions/workflows/ci.yml)
-[![Go Reference](https://pkg.go.dev/badge/github.com/muno/freee-api-go.svg)](https://pkg.go.dev/github.com/muno/freee-api-go)
-[![Go Report Card](https://goreportcard.com/badge/github.com/muno/freee-api-go)](https://goreportcard.com/report/github.com/muno/freee-api-go)
+[![CI](https://github.com/u-masato/freee-api-go/actions/workflows/ci.yml/badge.svg)](https://github.com/u-masato/freee-api-go/actions/workflows/ci.yml)
+[![Go Reference](https://pkg.go.dev/badge/github.com/u-masato/freee-api-go.svg)](https://pkg.go.dev/github.com/u-masato/freee-api-go)
+[![Go Report Card](https://goreportcard.com/badge/github.com/u-masato/freee-api-go)](https://goreportcard.com/report/github.com/u-masato/freee-api-go)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 freee（フリー株式会社）が提供する会計API用のGo言語クライアントライブラリ。
@@ -19,7 +19,7 @@ freee（フリー株式会社）が提供する会計API用のGo言語クライ�
 ## インストール
 
 ```bash
-go get github.com/muno/freee-api-go
+go get github.com/u-masato/freee-api-go
 ```
 
 **必要要件**: Go 1.21以上
@@ -36,7 +36,7 @@ import (
     "fmt"
     "log"
 
-    "github.com/muno/freee-api-go/auth"
+    "github.com/u-masato/freee-api-go/auth"
 )
 
 func main() {
@@ -75,8 +75,8 @@ import (
     "fmt"
     "log"
 
-    "github.com/muno/freee-api-go/accounting"
-    "github.com/muno/freee-api-go/client"
+    "github.com/u-masato/freee-api-go/accounting"
+    "github.com/u-masato/freee-api-go/client"
     "golang.org/x/oauth2"
 )
 
@@ -208,7 +208,7 @@ go generate ./tools
 
 - [計画書（PLAN.md）](PLAN.md) - プロジェクト全体の設計・方針
 - [実装TODO（TODO.md）](TODO.md) - 実装タスク一覧
-- [GoDoc](https://pkg.go.dev/github.com/muno/freee-api-go) - API リファレンス
+- [GoDoc](https://pkg.go.dev/github.com/u-masato/freee-api-go) - API リファレンス
 
 ## コントリビューション
 
