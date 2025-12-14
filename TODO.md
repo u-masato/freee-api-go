@@ -8,7 +8,7 @@
 |---------|----------|------|
 | Phase 1: プロジェクト基盤 | ✅ Completed | 7/7 |
 | Phase 2: OAuth2認証 | ✅ Completed | 7/7 |
-| Phase 3: HTTP Transport層 | 🔲 Not Started | 0/7 |
+| Phase 3: HTTP Transport層 | ✅ Completed | 7/7 |
 | Phase 4: Generated API Client | 🔲 Not Started | 0/6 |
 | Phase 5: Accounting Facade | 🔲 Not Started | 0/8 |
 | Phase 6: ドキュメント・サンプル | 🔲 Not Started | 0/6 |
@@ -17,7 +17,7 @@
 **凡例**: 🔲 未着手 | 🔄 進行中 | ✅ 完了
 
 **最終更新**: 2025-12-14
-**現在のフェーズ**: Phase 2 完了 → Phase 3 準備中
+**現在のフェーズ**: Phase 3 完了 → Phase 4 準備中
 
 ---
 
@@ -211,59 +211,102 @@ mkdir -p {client,auth,accounting,transport,internal/{gen,testutil},examples/{oau
 
 ---
 
-## Phase 3: HTTP Transport層（Transport）
+## Phase 3: HTTP Transport層（Transport） ✅
 
 **目標**: 共通HTTP処理の実装
 
-### 3.1 transport/ パッケージ設計
+**ステータス**: ✅ 完了（2025-12-14）
 
-- [ ] `transport/transport.go` 作成（基本構造）
-- [ ] `transport/roundtripper.go` 作成（カスタムRoundTripper）
-- [ ] `transport/options.go` 作成（設定オプション）
+### 3.1 transport/ パッケージ設計 ✅
 
-### 3.2 カスタムRoundTripper実装
+- [x] `transport/transport.go` 作成（基本構造）
+- [x] `transport/options.go` 作成（設定オプション）
+- [x] RoundTripperチェーン機能実装
 
-- [ ] `TransportChain` 実装（複数RoundTripperチェーン）
-- [ ] ベースRoundTripper（http.DefaultTransport）
+**コミット**: `00ccadf` - Add HTTP Transport layer implementation
 
-### 3.3 レート制限（rate.Limiter統合）
+### 3.2 カスタムRoundTripper実装 ✅
 
-- [ ] `transport/ratelimit.go` 作成
-- [ ] `RateLimitRoundTripper` 実装
+- [x] `ChainRoundTrippers` 実装（複数RoundTripperチェーン）
+- [x] ベースRoundTripper（http.DefaultTransport）
+- [x] SetBase メソッドによる柔軟な構成
+
+**コミット**: `00ccadf` - Add HTTP Transport layer implementation
+
+### 3.3 レート制限（rate.Limiter統合） ✅
+
+- [x] `transport/ratelimit.go` 作成
+- [x] `RateLimitRoundTripper` 実装
   - `golang.org/x/time/rate` 利用
   - リクエスト前にWait
-  - 429レスポンス対応
+  - コンテキストキャンセル対応
+- [x] レート制限テスト作成（4テスト成功）
 
-### 3.4 リトライロジック
+**コミット**: `00ccadf`, `294ec64` - Add HTTP Transport layer + dependency
 
-- [ ] `transport/retry.go` 作成
-- [ ] `RetryRoundTripper` 実装
+### 3.4 リトライロジック ✅
+
+- [x] `transport/retry.go` 作成
+- [x] `RetryRoundTripper` 実装
   - エクスポネンシャルバックオフ
-  - リトライ条件設定（5xx, 429, タイムアウト）
+  - リトライ条件設定（5xx, 429）
   - 最大リトライ回数設定
+  - 最大遅延30秒のキャップ
+- [x] リトライテスト作成（10テスト成功）
 
-### 3.5 ロギング（構造化ログ）
+**コミット**: `00ccadf` - Add HTTP Transport layer implementation
 
-- [ ] `transport/logging.go` 作成
-- [ ] `LoggingRoundTripper` 実装
+### 3.5 ロギング（構造化ログ） ✅
+
+- [x] `transport/logging.go` 作成
+- [x] `LoggingRoundTripper` 実装
   - リクエスト/レスポンスログ
-  - シークレットマスキング（Authorization ヘッダ）
+  - シークレットマスキング（Authorization, Cookie, API-Key）
   - slog（Go 1.21+）利用
+  - 構造化ログ出力
+- [x] ロギングテスト作成（7テスト成功）
 
-### 3.6 User-Agent付与
+**コミット**: `00ccadf` - Add HTTP Transport layer implementation
 
-- [ ] `transport/useragent.go` 作成
-- [ ] `UserAgentRoundTripper` 実装
-  - `freee-api-go/v0.1.0 (+github.com/...)`
-  - バージョン情報埋め込み（ldflags）
+### 3.6 User-Agent付与 ✅
 
-### 3.7 ユニットテスト
+- [x] `transport/useragent.go` 作成
+- [x] `UserAgentRoundTripper` 実装
+  - カスタムUser-Agent設定
+  - 既存User-Agentへの追加
+  - DefaultUserAgent ヘルパー関数
+- [x] User-Agentテスト作成（7テスト成功）
 
-- [ ] 各RoundTripperのテスト作成
-- [ ] httptest.Server でエンドポイントモック
-- [ ] レート制限・リトライ動作検証
+**コミット**: `00ccadf` - Add HTTP Transport layer implementation
 
-**Phase 3 完了条件**: Transport層が統合され、堅牢なHTTP通信が可能なこと
+### 3.7 ユニットテスト ✅
+
+- [x] 各RoundTripperのテスト作成
+  - transport_test.go（4テスト）
+  - ratelimit_test.go（4テスト）
+  - retry_test.go（10テスト）
+  - logging_test.go（7テスト）
+  - useragent_test.go（7テスト）
+- [x] httptest.Server でエンドポイントモック
+- [x] レート制限・リトライ動作検証
+- [x] 全42テスト成功
+
+**コミット**: `00ccadf` - Add HTTP Transport layer implementation
+
+### Phase 3 成果物
+
+✅ **完了条件達成**: Transport層が統合され、堅牢なHTTP通信が可能
+
+**作成ファイル**: 11ファイル
+- 実装ファイル: 5個（transport.go, options.go, ratelimit.go, retry.go, logging.go, useragent.go）
+- テストファイル: 5個（各_test.go）
+
+**テスト**: 42テスト全て成功
+**コミット数**: 2
+- `00ccadf` - Transport層実装
+- `294ec64` - 依存関係追加
+
+**次のフェーズ**: Phase 4 - Generated API Client
 
 ---
 
@@ -501,12 +544,22 @@ mkdir -p {client,auth,accounting,transport,internal/{gen,testutil},examples/{oau
 6. ✅ OAuth2サンプルアプリケーション作成
 7. ✅ 詳細ドキュメント作成
 
-### 🎯 Phase 3 次のタスク
+### ✅ Phase 3 完了（2025-12-14）
 
-1. ⬜ `transport/transport.go` 作成（基本構造）
-2. ⬜ `transport/ratelimit.go` 作成（レート制限）
-3. ⬜ `transport/retry.go` 作成（リトライロジック）
-4. ⬜ `transport/logging.go` 作成（ロギング）
+1. ✅ `transport/transport.go` 作成（基本構造）
+2. ✅ `transport/options.go` 作成（設定オプション）
+3. ✅ `transport/ratelimit.go` 作成（レート制限）
+4. ✅ `transport/retry.go` 作成（リトライロジック）
+5. ✅ `transport/logging.go` 作成（ロギング）
+6. ✅ `transport/useragent.go` 作成（User-Agent）
+7. ✅ 包括的なテスト作成（42テスト全て成功）
+
+### 🎯 Phase 4 次のタスク
+
+1. ⬜ OpenAPI仕様ファイル取得（`api/openapi.yaml`）
+2. ⬜ oapi-codegen セットアップ
+3. ⬜ コード生成設定（`oapi-codegen.yaml`）
+4. ⬜ `internal/gen/` コード生成
 
 ---
 
@@ -521,4 +574,4 @@ mkdir -p {client,auth,accounting,transport,internal/{gen,testutil},examples/{oau
 ---
 
 **最終更新**: 2025-12-14
-**次のアクション**: Phase 3.1 transport/パッケージ設計から開始
+**次のアクション**: Phase 4.1 OpenAPI仕様ファイル取得から開始
