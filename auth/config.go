@@ -10,6 +10,7 @@ package auth
 
 import (
 	"context"
+	"net/http"
 
 	"golang.org/x/oauth2"
 )
@@ -115,6 +116,6 @@ func (c *Config) TokenSource(ctx context.Context, token *oauth2.Token) oauth2.To
 //
 //	httpClient := config.Client(ctx, token)
 //	resp, err := httpClient.Get("https://api.freee.co.jp/...")
-func (c *Config) Client(ctx context.Context, token *oauth2.Token) *oauth2.HTTPClient {
+func (c *Config) Client(ctx context.Context, token *oauth2.Token) *http.Client {
 	return c.oauth2Config.Client(ctx, token)
 }
