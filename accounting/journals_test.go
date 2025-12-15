@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/muno/freee-api-go/client"
+	"github.com/muno/freee-api-go/internal/gen"
 )
 
 func TestJournalsService_Download(t *testing.T) {
@@ -349,6 +350,122 @@ func TestJournalsService_List(t *testing.T) {
 				if len(result.ManualJournals) != tt.wantCount {
 					t.Errorf("List() got %d manual journals, want %d", len(result.ManualJournals), tt.wantCount)
 				}
+			}
+		})
+	}
+}
+
+func TestJournalsService_ListIter(t *testing.T) {
+	tests := []struct {
+		name        string
+		companyID   int64
+		opts        *ListManualJournalsOptions
+		mockPages   []string
+		wantErr     bool
+		wantCount   int
+		wantFetches int
+	}{
+		{
+			name:      "single page iteration",
+			companyID: 1,
+			opts:      nil,
+			mockPages: []string{
+				`{
+					"manual_journals": [
+						{"id": 1, "company_id": 1, "issue_date": "2024-01-15"},
+						{"id": 2, "company_id": 1, "issue_date": "2024-01-16"}
+					]
+				}`,
+				`{"manual_journals": []}`,
+			},
+			wantErr:     false,
+			wantCount:   2,
+			wantFetches: 2,
+		},
+		{
+			name:      "multiple page iteration",
+			companyID: 1,
+			opts: &ListManualJournalsOptions{
+				Limit: int64Ptr(2),
+			},
+			mockPages: []string{
+				`{
+					"manual_journals": [
+						{"id": 1, "company_id": 1, "issue_date": "2024-01-15"},
+						{"id": 2, "company_id": 1, "issue_date": "2024-01-16"}
+					]
+				}`,
+				`{
+					"manual_journals": [
+						{"id": 3, "company_id": 1, "issue_date": "2024-01-17"},
+						{"id": 4, "company_id": 1, "issue_date": "2024-01-18"}
+					]
+				}`,
+				`{"manual_journals": []}`,
+			},
+			wantErr:     false,
+			wantCount:   4,
+			wantFetches: 3,
+		},
+		{
+			name:      "empty result",
+			companyID: 1,
+			opts:      nil,
+			mockPages: []string{
+				`{"manual_journals": []}`,
+			},
+			wantErr:     false,
+			wantCount:   0,
+			wantFetches: 1,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fetchCount := 0
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if fetchCount < len(tt.mockPages) {
+					w.Header().Set("Content-Type", "application/json")
+					w.WriteHeader(http.StatusOK)
+					w.Write([]byte(tt.mockPages[fetchCount]))
+					fetchCount++
+				} else {
+					w.Header().Set("Content-Type", "application/json")
+					w.WriteHeader(http.StatusOK)
+					w.Write([]byte(`{"manual_journals": []}`))
+				}
+			}))
+			defer server.Close()
+
+			baseClient := client.NewClient(
+				client.WithBaseURL(server.URL),
+				client.WithHTTPClient(server.Client()),
+			)
+			accountingClient, err := NewClient(baseClient)
+			if err != nil {
+				t.Fatalf("NewClient() error = %v", err)
+			}
+
+			journalsService := accountingClient.Journals()
+
+			iter := journalsService.ListIter(context.Background(), tt.companyID, tt.opts)
+
+			var journals []gen.ManualJournal
+			for iter.Next() {
+				journals = append(journals, iter.Value())
+			}
+
+			if err := iter.Err(); (err != nil) != tt.wantErr {
+				t.Errorf("ListIter() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			if len(journals) != tt.wantCount {
+				t.Errorf("ListIter() got %d journals, want %d", len(journals), tt.wantCount)
+			}
+
+			if fetchCount != tt.wantFetches {
+				t.Errorf("ListIter() made %d fetches, want %d", fetchCount, tt.wantFetches)
 			}
 		})
 	}

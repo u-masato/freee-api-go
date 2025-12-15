@@ -285,3 +285,52 @@ func (s *DealsService) Delete(ctx context.Context, companyID int64, dealID int64
 
 	return nil
 }
+
+// ListIter returns an iterator for paginated deal results.
+//
+// The iterator transparently handles pagination, automatically fetching
+// new pages as needed. This is more convenient than manually managing
+// offset/limit parameters.
+//
+// Example:
+//
+//	typ := "expense"
+//	opts := &accounting.ListDealsOptions{
+//	    Type: &typ,
+//	}
+//	iter := dealsService.ListIter(ctx, companyID, opts)
+//	for iter.Next() {
+//	    deal := iter.Value()
+//	    fmt.Printf("Deal ID: %d, Amount: %d\n", deal.Id, deal.Amount)
+//	}
+//	if err := iter.Err(); err != nil {
+//	    log.Fatal(err)
+//	}
+func (s *DealsService) ListIter(ctx context.Context, companyID int64, opts *ListDealsOptions) Iterator[gen.Deal] {
+	// Determine page size (limit)
+	limit := int64(20) // Default
+	if opts != nil && opts.Limit != nil {
+		limit = *opts.Limit
+	}
+
+	// Create a fetcher function that captures the service and options
+	fetcher := func(ctx context.Context, offset, limit int64) ([]gen.Deal, int64, error) {
+		// Create a copy of options with updated offset/limit
+		fetchOpts := &ListDealsOptions{}
+		if opts != nil {
+			*fetchOpts = *opts
+		}
+		fetchOpts.Offset = &offset
+		fetchOpts.Limit = &limit
+
+		// Fetch the page
+		result, err := s.List(ctx, companyID, fetchOpts)
+		if err != nil {
+			return nil, 0, err
+		}
+
+		return result.Deals, result.TotalCount, nil
+	}
+
+	return NewPager(ctx, fetcher, limit)
+}

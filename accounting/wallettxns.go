@@ -101,6 +101,60 @@ func (s *WalletTxnService) List(ctx context.Context, companyID int64, opts *List
 	}, nil
 }
 
+// ListIter returns an iterator for paginated wallet transaction results.
+//
+// The iterator transparently handles pagination, automatically fetching
+// new pages as needed. This is more convenient than manually managing
+// offset/limit parameters.
+//
+// Note: The freee API does not provide total_count for wallet transactions,
+// so the iterator will fetch pages until an empty result is returned.
+//
+// Example:
+//
+//	walletType := "bank_account"
+//	opts := &accounting.ListWalletTxnsOptions{
+//	    WalletableType: &walletType,
+//	}
+//	iter := walletTxnService.ListIter(ctx, companyID, opts)
+//	for iter.Next() {
+//	    txn := iter.Value()
+//	    fmt.Printf("Transaction ID: %d, Amount: %d\n", txn.Id, txn.Amount)
+//	}
+//	if err := iter.Err(); err != nil {
+//	    log.Fatal(err)
+//	}
+func (s *WalletTxnService) ListIter(ctx context.Context, companyID int64, opts *ListWalletTxnsOptions) Iterator[gen.WalletTxn] {
+	// Determine page size (limit)
+	limit := int64(20) // Default
+	if opts != nil && opts.Limit != nil {
+		limit = *opts.Limit
+	}
+
+	// Create a fetcher function that captures the service and options
+	fetcher := func(ctx context.Context, offset, limit int64) ([]gen.WalletTxn, int64, error) {
+		// Create a copy of options with updated offset/limit
+		fetchOpts := &ListWalletTxnsOptions{}
+		if opts != nil {
+			*fetchOpts = *opts
+		}
+		fetchOpts.Offset = &offset
+		fetchOpts.Limit = &limit
+
+		// Fetch the page
+		result, err := s.List(ctx, companyID, fetchOpts)
+		if err != nil {
+			return nil, 0, err
+		}
+
+		// Since the API doesn't provide total_count, we return 0
+		// The pager will continue until an empty array is returned
+		return result.WalletTxns, 0, nil
+	}
+
+	return NewPager(ctx, fetcher, limit)
+}
+
 // Get retrieves a single wallet transaction by ID.
 //
 // Example:
