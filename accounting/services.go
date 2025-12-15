@@ -75,3 +75,20 @@ type TransfersService struct {
 	client    *client.Client
 	genClient *gen.ClientWithResponses
 }
+
+// PartnersService provides operations for managing partners (取引先).
+//
+// Partners represent business partners such as clients, suppliers, and vendors
+// that your company has transactions with.
+//
+// All methods require a context.Context for cancellation and timeouts.
+//
+// Example:
+//
+//	partners := accountingClient.Partners()
+//	list, err := partners.List(ctx, companyID, nil)
+//	partner, err := partners.Get(ctx, companyID, partnerID)
+type PartnersService struct {
+	client    *client.Client
+	genClient *gen.ClientWithResponses
+}

@@ -50,6 +50,7 @@ type Client struct {
 	journals  *JournalsService
 	walletTxn *WalletTxnService
 	transfers *TransfersService
+	partners  *PartnersService
 }
 
 // NewClient creates a new accounting facade client.
@@ -149,6 +150,24 @@ func (c *Client) Transfers() *TransfersService {
 		}
 	}
 	return c.transfers
+}
+
+// Partners returns the PartnersService for managing partners (取引先).
+//
+// The service is lazily initialized on first access.
+//
+// Example:
+//
+//	partners := accountingClient.Partners()
+//	list, err := partners.List(ctx, companyID, nil)
+func (c *Client) Partners() *PartnersService {
+	if c.partners == nil {
+		c.partners = &PartnersService{
+			client:    c.client,
+			genClient: c.genClient,
+		}
+	}
+	return c.partners
 }
 
 // BaseClient returns the underlying base client.
