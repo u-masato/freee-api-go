@@ -430,6 +430,298 @@ func TestTransfersService_Delete(t *testing.T) {
 	}
 }
 
+func TestTransfersService_List_ErrorCases(t *testing.T) {
+	tests := []struct {
+		name       string
+		companyID  int64
+		opts       *ListTransfersOptions
+		mockStatus int
+		mockBody   string
+		wantErr    bool
+	}{
+		{
+			name:       "server error",
+			companyID:  1,
+			opts:       nil,
+			mockStatus: http.StatusInternalServerError,
+			mockBody:   `{"errors": [{"messages": ["Internal server error"]}]}`,
+			wantErr:    true,
+		},
+		{
+			name:       "unauthorized",
+			companyID:  1,
+			opts:       nil,
+			mockStatus: http.StatusUnauthorized,
+			mockBody:   `{"errors": [{"messages": ["Invalid access token"]}]}`,
+			wantErr:    true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(tt.mockStatus)
+				w.Write([]byte(tt.mockBody))
+			}))
+			defer server.Close()
+
+			baseClient := client.NewClient(client.WithBaseURL(server.URL))
+			accountingClient, err := NewClient(baseClient)
+			if err != nil {
+				t.Fatalf("NewClient() error = %v", err)
+			}
+
+			transfersService := accountingClient.Transfers()
+			_, err = transfersService.List(context.Background(), tt.companyID, tt.opts)
+
+			if (err != nil) != tt.wantErr {
+				t.Errorf("List() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestTransfersService_Get_ErrorCases(t *testing.T) {
+	tests := []struct {
+		name       string
+		companyID  int64
+		transferID int64
+		mockStatus int
+		mockBody   string
+		wantErr    bool
+	}{
+		{
+			name:       "not found",
+			companyID:  1,
+			transferID: 999,
+			mockStatus: http.StatusNotFound,
+			mockBody:   `{"errors": [{"messages": ["Resource not found"]}]}`,
+			wantErr:    true,
+		},
+		{
+			name:       "server error",
+			companyID:  1,
+			transferID: 123,
+			mockStatus: http.StatusInternalServerError,
+			mockBody:   `{"errors": [{"messages": ["Internal server error"]}]}`,
+			wantErr:    true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(tt.mockStatus)
+				w.Write([]byte(tt.mockBody))
+			}))
+			defer server.Close()
+
+			baseClient := client.NewClient(client.WithBaseURL(server.URL))
+			accountingClient, err := NewClient(baseClient)
+			if err != nil {
+				t.Fatalf("NewClient() error = %v", err)
+			}
+
+			transfersService := accountingClient.Transfers()
+			_, err = transfersService.Get(context.Background(), tt.companyID, tt.transferID)
+
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Get() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestTransfersService_Create_ErrorCases(t *testing.T) {
+	tests := []struct {
+		name       string
+		mockStatus int
+		mockBody   string
+		wantErr    bool
+	}{
+		{
+			name:       "bad request",
+			mockStatus: http.StatusBadRequest,
+			mockBody:   `{"errors": [{"messages": ["date is required"]}]}`,
+			wantErr:    true,
+		},
+		{
+			name:       "server error",
+			mockStatus: http.StatusInternalServerError,
+			mockBody:   `{"errors": [{"messages": ["Internal server error"]}]}`,
+			wantErr:    true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(tt.mockStatus)
+				w.Write([]byte(tt.mockBody))
+			}))
+			defer server.Close()
+
+			baseClient := client.NewClient(client.WithBaseURL(server.URL))
+			accountingClient, err := NewClient(baseClient)
+			if err != nil {
+				t.Fatalf("NewClient() error = %v", err)
+			}
+
+			params := gen.TransferParams{
+				CompanyId:          1,
+				Date:               "2024-01-15",
+				Amount:             10000,
+				FromWalletableId:   100,
+				FromWalletableType: "bank_account",
+				ToWalletableId:     200,
+				ToWalletableType:   "wallet",
+			}
+
+			transfersService := accountingClient.Transfers()
+			_, err = transfersService.Create(context.Background(), params)
+
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Create() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestTransfersService_Update_ErrorCases(t *testing.T) {
+	tests := []struct {
+		name       string
+		transferID int64
+		mockStatus int
+		mockBody   string
+		wantErr    bool
+	}{
+		{
+			name:       "not found",
+			transferID: 999,
+			mockStatus: http.StatusNotFound,
+			mockBody:   `{"errors": [{"messages": ["Resource not found"]}]}`,
+			wantErr:    true,
+		},
+		{
+			name:       "server error",
+			transferID: 123,
+			mockStatus: http.StatusInternalServerError,
+			mockBody:   `{"errors": [{"messages": ["Internal server error"]}]}`,
+			wantErr:    true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(tt.mockStatus)
+				w.Write([]byte(tt.mockBody))
+			}))
+			defer server.Close()
+
+			baseClient := client.NewClient(client.WithBaseURL(server.URL))
+			accountingClient, err := NewClient(baseClient)
+			if err != nil {
+				t.Fatalf("NewClient() error = %v", err)
+			}
+
+			params := gen.TransferParams{
+				CompanyId:          1,
+				Date:               "2024-01-20",
+				Amount:             15000,
+				FromWalletableId:   100,
+				FromWalletableType: "bank_account",
+				ToWalletableId:     200,
+				ToWalletableType:   "wallet",
+			}
+
+			transfersService := accountingClient.Transfers()
+			_, err = transfersService.Update(context.Background(), tt.transferID, params)
+
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Update() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestTransfersService_ListIter_ErrorCases(t *testing.T) {
+	tests := []struct {
+		name      string
+		companyID int64
+		opts      *ListTransfersOptions
+		mockPages []struct {
+			status int
+			body   string
+		}
+		wantErr   bool
+		wantCount int
+	}{
+		{
+			name:      "error on first fetch",
+			companyID: 1,
+			opts:      nil,
+			mockPages: []struct {
+				status int
+				body   string
+			}{
+				{http.StatusInternalServerError, `{"errors": [{"messages": ["Server error"]}]}`},
+			},
+			wantErr:   true,
+			wantCount: 0,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fetchCount := 0
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if fetchCount < len(tt.mockPages) {
+					w.Header().Set("Content-Type", "application/json")
+					w.WriteHeader(tt.mockPages[fetchCount].status)
+					w.Write([]byte(tt.mockPages[fetchCount].body))
+					fetchCount++
+				} else {
+					w.Header().Set("Content-Type", "application/json")
+					w.WriteHeader(http.StatusOK)
+					w.Write([]byte(`{"transfers": []}`))
+				}
+			}))
+			defer server.Close()
+
+			baseClient := client.NewClient(
+				client.WithBaseURL(server.URL),
+				client.WithHTTPClient(server.Client()),
+			)
+			accountingClient, err := NewClient(baseClient)
+			if err != nil {
+				t.Fatalf("NewClient() error = %v", err)
+			}
+
+			transfersService := accountingClient.Transfers()
+			iter := transfersService.ListIter(context.Background(), tt.companyID, tt.opts)
+
+			var transfers []gen.Transfer
+			for iter.Next() {
+				transfers = append(transfers, iter.Value())
+			}
+
+			err = iter.Err()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ListIter() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			if len(transfers) != tt.wantCount {
+				t.Errorf("ListIter() got %d transfers, want %d", len(transfers), tt.wantCount)
+			}
+		})
+	}
+}
+
 func TestTransfersService_ListIter(t *testing.T) {
 	tests := []struct {
 		name        string

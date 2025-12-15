@@ -404,6 +404,367 @@ func int64Ptr(i int64) *int64 {
 	return &i
 }
 
+func boolPtr(b bool) *bool {
+	return &b
+}
+
+func TestDealsService_List_ErrorCases(t *testing.T) {
+	tests := []struct {
+		name       string
+		companyID  int64
+		opts       *ListDealsOptions
+		mockStatus int
+		mockBody   string
+		wantErr    bool
+	}{
+		{
+			name:       "server error 500",
+			companyID:  1,
+			opts:       nil,
+			mockStatus: http.StatusInternalServerError,
+			mockBody:   `{"errors": [{"messages": ["Internal server error"]}]}`,
+			wantErr:    true,
+		},
+		{
+			name:       "unauthorized 401",
+			companyID:  1,
+			opts:       nil,
+			mockStatus: http.StatusUnauthorized,
+			mockBody:   `{"errors": [{"messages": ["Invalid access token"]}]}`,
+			wantErr:    true,
+		},
+		{
+			name:       "bad request 400",
+			companyID:  1,
+			opts:       nil,
+			mockStatus: http.StatusBadRequest,
+			mockBody:   `{"errors": [{"messages": ["Invalid parameters"]}]}`,
+			wantErr:    true,
+		},
+		{
+			name:      "with all filter options",
+			companyID: 1,
+			opts: &ListDealsOptions{
+				PartnerId:      int64Ptr(100),
+				AccountItemId:  int64Ptr(200),
+				PartnerCode:    stringPtr("PARTNER001"),
+				Status:         stringPtr("settled"),
+				Type:           stringPtr("expense"),
+				StartIssueDate: stringPtr("2024-01-01"),
+				EndIssueDate:   stringPtr("2024-01-31"),
+				StartDueDate:   stringPtr("2024-02-01"),
+				EndDueDate:     stringPtr("2024-02-28"),
+				StartRenewDate: stringPtr("2024-03-01"),
+				EndRenewDate:   stringPtr("2024-03-31"),
+				Accruals:       stringPtr("with"),
+				Offset:         int64Ptr(10),
+				Limit:          int64Ptr(50),
+			},
+			mockStatus: http.StatusOK,
+			mockBody: `{
+				"deals": [{"id": 1, "company_id": 1, "amount": 10000, "issue_date": "2024-01-15"}],
+				"meta": {"total_count": 1}
+			}`,
+			wantErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(tt.mockStatus)
+				w.Write([]byte(tt.mockBody))
+			}))
+			defer server.Close()
+
+			baseClient := client.NewClient(client.WithBaseURL(server.URL))
+			accountingClient, err := NewClient(baseClient)
+			if err != nil {
+				t.Fatalf("NewClient() error = %v", err)
+			}
+
+			dealsService := accountingClient.Deals()
+			result, err := dealsService.List(context.Background(), tt.companyID, tt.opts)
+
+			if (err != nil) != tt.wantErr {
+				t.Errorf("List() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			if !tt.wantErr && result == nil {
+				t.Error("List() returned nil result on success")
+			}
+		})
+	}
+}
+
+func TestDealsService_Get_ErrorCases(t *testing.T) {
+	tests := []struct {
+		name       string
+		companyID  int64
+		dealID     int64
+		opts       *GetDealOptions
+		mockStatus int
+		mockBody   string
+		wantErr    bool
+	}{
+		{
+			name:       "not found 404",
+			companyID:  1,
+			dealID:     999,
+			opts:       nil,
+			mockStatus: http.StatusNotFound,
+			mockBody:   `{"errors": [{"messages": ["Resource not found"]}]}`,
+			wantErr:    true,
+		},
+		{
+			name:       "server error",
+			companyID:  1,
+			dealID:     123,
+			opts:       nil,
+			mockStatus: http.StatusInternalServerError,
+			mockBody:   `{"errors": [{"messages": ["Internal server error"]}]}`,
+			wantErr:    true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(tt.mockStatus)
+				w.Write([]byte(tt.mockBody))
+			}))
+			defer server.Close()
+
+			baseClient := client.NewClient(client.WithBaseURL(server.URL))
+			accountingClient, err := NewClient(baseClient)
+			if err != nil {
+				t.Fatalf("NewClient() error = %v", err)
+			}
+
+			dealsService := accountingClient.Deals()
+			_, err = dealsService.Get(context.Background(), tt.companyID, tt.dealID, tt.opts)
+
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Get() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestDealsService_Create_ErrorCases(t *testing.T) {
+	tests := []struct {
+		name       string
+		mockStatus int
+		mockBody   string
+		wantErr    bool
+	}{
+		{
+			name:       "bad request - missing required field",
+			mockStatus: http.StatusBadRequest,
+			mockBody:   `{"errors": [{"messages": ["issue_date is required"]}]}`,
+			wantErr:    true,
+		},
+		{
+			name:       "forbidden",
+			mockStatus: http.StatusForbidden,
+			mockBody:   `{"errors": [{"messages": ["Forbidden operation"]}]}`,
+			wantErr:    true,
+		},
+		{
+			name:       "server error",
+			mockStatus: http.StatusInternalServerError,
+			mockBody:   `{"errors": [{"messages": ["Internal server error"]}]}`,
+			wantErr:    true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(tt.mockStatus)
+				w.Write([]byte(tt.mockBody))
+			}))
+			defer server.Close()
+
+			baseClient := client.NewClient(client.WithBaseURL(server.URL))
+			accountingClient, err := NewClient(baseClient)
+			if err != nil {
+				t.Fatalf("NewClient() error = %v", err)
+			}
+
+			params := gen.DealCreateParams{
+				CompanyId: 1,
+				IssueDate: "2024-01-15",
+				Type:      "expense",
+				Details:   nil,
+			}
+
+			dealsService := accountingClient.Deals()
+			_, err = dealsService.Create(context.Background(), params)
+
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Create() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestDealsService_Update_ErrorCases(t *testing.T) {
+	tests := []struct {
+		name       string
+		dealID     int64
+		mockStatus int
+		mockBody   string
+		wantErr    bool
+	}{
+		{
+			name:       "not found",
+			dealID:     999,
+			mockStatus: http.StatusNotFound,
+			mockBody:   `{"errors": [{"messages": ["Resource not found"]}]}`,
+			wantErr:    true,
+		},
+		{
+			name:       "bad request",
+			dealID:     123,
+			mockStatus: http.StatusBadRequest,
+			mockBody:   `{"errors": [{"messages": ["Invalid parameters"]}]}`,
+			wantErr:    true,
+		},
+		{
+			name:       "server error",
+			dealID:     123,
+			mockStatus: http.StatusInternalServerError,
+			mockBody:   `{"errors": [{"messages": ["Internal server error"]}]}`,
+			wantErr:    true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(tt.mockStatus)
+				w.Write([]byte(tt.mockBody))
+			}))
+			defer server.Close()
+
+			baseClient := client.NewClient(client.WithBaseURL(server.URL))
+			accountingClient, err := NewClient(baseClient)
+			if err != nil {
+				t.Fatalf("NewClient() error = %v", err)
+			}
+
+			params := gen.DealUpdateParams{
+				CompanyId: 1,
+				IssueDate: "2024-01-20",
+				Type:      "expense",
+				Details:   nil,
+			}
+
+			dealsService := accountingClient.Deals()
+			_, err = dealsService.Update(context.Background(), tt.dealID, params)
+
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Update() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestDealsService_ListIter_ErrorCases(t *testing.T) {
+	tests := []struct {
+		name      string
+		companyID int64
+		opts      *ListDealsOptions
+		mockPages []struct {
+			status int
+			body   string
+		}
+		wantErr   bool
+		wantCount int
+	}{
+		{
+			name:      "error on first fetch",
+			companyID: 1,
+			opts:      nil,
+			mockPages: []struct {
+				status int
+				body   string
+			}{
+				{http.StatusInternalServerError, `{"errors": [{"messages": ["Server error"]}]}`},
+			},
+			wantErr:   true,
+			wantCount: 0,
+		},
+		{
+			name:      "error on second page",
+			companyID: 1,
+			opts: &ListDealsOptions{
+				Limit: int64Ptr(2),
+			},
+			mockPages: []struct {
+				status int
+				body   string
+			}{
+				{http.StatusOK, `{"deals": [{"id": 1}, {"id": 2}], "meta": {"total_count": 5}}`},
+				{http.StatusInternalServerError, `{"errors": [{"messages": ["Server error"]}]}`},
+			},
+			wantErr:   true,
+			wantCount: 2,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fetchCount := 0
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if fetchCount < len(tt.mockPages) {
+					w.Header().Set("Content-Type", "application/json")
+					w.WriteHeader(tt.mockPages[fetchCount].status)
+					w.Write([]byte(tt.mockPages[fetchCount].body))
+					fetchCount++
+				} else {
+					w.Header().Set("Content-Type", "application/json")
+					w.WriteHeader(http.StatusOK)
+					w.Write([]byte(`{"deals": [], "meta": {"total_count": 0}}`))
+				}
+			}))
+			defer server.Close()
+
+			baseClient := client.NewClient(
+				client.WithBaseURL(server.URL),
+				client.WithHTTPClient(server.Client()),
+			)
+			accountingClient, err := NewClient(baseClient)
+			if err != nil {
+				t.Fatalf("NewClient() error = %v", err)
+			}
+
+			dealsService := accountingClient.Deals()
+			iter := dealsService.ListIter(context.Background(), tt.companyID, tt.opts)
+
+			var deals []gen.Deal
+			for iter.Next() {
+				deals = append(deals, iter.Value())
+			}
+
+			err = iter.Err()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ListIter() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			if len(deals) != tt.wantCount {
+				t.Errorf("ListIter() got %d deals, want %d", len(deals), tt.wantCount)
+			}
+		})
+	}
+}
+
 func TestDealsService_ListIter(t *testing.T) {
 	tests := []struct {
 		name        string

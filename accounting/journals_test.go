@@ -10,6 +10,19 @@ import (
 	"github.com/muno/freee-api-go/internal/gen"
 )
 
+// Helper functions for journals tests
+func stringPtrJ(s string) *string {
+	return &s
+}
+
+func int64PtrJ(i int64) *int64 {
+	return &i
+}
+
+func boolPtrJ(b bool) *bool {
+	return &b
+}
+
 func TestJournalsService_Download(t *testing.T) {
 	tests := []struct {
 		name         string
@@ -350,6 +363,224 @@ func TestJournalsService_List(t *testing.T) {
 				if len(result.ManualJournals) != tt.wantCount {
 					t.Errorf("List() got %d manual journals, want %d", len(result.ManualJournals), tt.wantCount)
 				}
+			}
+		})
+	}
+}
+
+func TestJournalsService_Download_ErrorCases(t *testing.T) {
+	tests := []struct {
+		name         string
+		companyID    int64
+		downloadType string
+		opts         *DownloadJournalsOptions
+		mockStatus   int
+		mockBody     string
+		wantErr      bool
+	}{
+		{
+			name:         "server error",
+			companyID:    1,
+			downloadType: "csv",
+			opts:         nil,
+			mockStatus:   http.StatusInternalServerError,
+			mockBody:     `{"errors": [{"messages": ["Internal server error"]}]}`,
+			wantErr:      true,
+		},
+		{
+			name:         "unauthorized",
+			companyID:    1,
+			downloadType: "csv",
+			opts:         nil,
+			mockStatus:   http.StatusUnauthorized,
+			mockBody:     `{"errors": [{"messages": ["Invalid access token"]}]}`,
+			wantErr:      true,
+		},
+		{
+			name:         "bad request",
+			companyID:    1,
+			downloadType: "invalid_type",
+			opts:         nil,
+			mockStatus:   http.StatusBadRequest,
+			mockBody:     `{"errors": [{"messages": ["Invalid download type"]}]}`,
+			wantErr:      true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(tt.mockStatus)
+				w.Write([]byte(tt.mockBody))
+			}))
+			defer server.Close()
+
+			baseClient := client.NewClient(client.WithBaseURL(server.URL))
+			accountingClient, err := NewClient(baseClient)
+			if err != nil {
+				t.Fatalf("NewClient() error = %v", err)
+			}
+
+			journalsService := accountingClient.Journals()
+			_, err = journalsService.Download(context.Background(), tt.companyID, tt.downloadType, tt.opts)
+
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Download() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestJournalsService_List_ErrorCases(t *testing.T) {
+	tests := []struct {
+		name       string
+		companyID  int64
+		opts       *ListManualJournalsOptions
+		mockStatus int
+		mockBody   string
+		wantErr    bool
+	}{
+		{
+			name:       "server error",
+			companyID:  1,
+			opts:       nil,
+			mockStatus: http.StatusInternalServerError,
+			mockBody:   `{"errors": [{"messages": ["Internal server error"]}]}`,
+			wantErr:    true,
+		},
+		{
+			name:       "unauthorized",
+			companyID:  1,
+			opts:       nil,
+			mockStatus: http.StatusUnauthorized,
+			mockBody:   `{"errors": [{"messages": ["Invalid access token"]}]}`,
+			wantErr:    true,
+		},
+		{
+			name:      "with comment status filter",
+			companyID: 1,
+			opts: &ListManualJournalsOptions{
+				CommentStatus:    stringPtrJ("posted"),
+				CommentImportant: boolPtrJ(true),
+				Adjustment:       stringPtrJ("only"),
+				ItemId:           int64PtrJ(100),
+			},
+			mockStatus: http.StatusOK,
+			mockBody:   `{"manual_journals": []}`,
+			wantErr:    false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(tt.mockStatus)
+				w.Write([]byte(tt.mockBody))
+			}))
+			defer server.Close()
+
+			baseClient := client.NewClient(client.WithBaseURL(server.URL))
+			accountingClient, err := NewClient(baseClient)
+			if err != nil {
+				t.Fatalf("NewClient() error = %v", err)
+			}
+
+			journalsService := accountingClient.Journals()
+			_, err = journalsService.List(context.Background(), tt.companyID, tt.opts)
+
+			if (err != nil) != tt.wantErr {
+				t.Errorf("List() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestJournalsService_ListIter_ErrorCases(t *testing.T) {
+	tests := []struct {
+		name      string
+		companyID int64
+		opts      *ListManualJournalsOptions
+		mockPages []struct {
+			status int
+			body   string
+		}
+		wantErr   bool
+		wantCount int
+	}{
+		{
+			name:      "error on first fetch",
+			companyID: 1,
+			opts:      nil,
+			mockPages: []struct {
+				status int
+				body   string
+			}{
+				{http.StatusInternalServerError, `{"errors": [{"messages": ["Server error"]}]}`},
+			},
+			wantErr:   true,
+			wantCount: 0,
+		},
+		{
+			name:      "error on second page",
+			companyID: 1,
+			opts: &ListManualJournalsOptions{
+				Limit: int64PtrJ(2),
+			},
+			mockPages: []struct {
+				status int
+				body   string
+			}{
+				{http.StatusOK, `{"manual_journals": [{"id": 1}, {"id": 2}]}`},
+				{http.StatusInternalServerError, `{"errors": [{"messages": ["Server error"]}]}`},
+			},
+			wantErr:   true,
+			wantCount: 2,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fetchCount := 0
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if fetchCount < len(tt.mockPages) {
+					w.Header().Set("Content-Type", "application/json")
+					w.WriteHeader(tt.mockPages[fetchCount].status)
+					w.Write([]byte(tt.mockPages[fetchCount].body))
+					fetchCount++
+				} else {
+					w.Header().Set("Content-Type", "application/json")
+					w.WriteHeader(http.StatusOK)
+					w.Write([]byte(`{"manual_journals": []}`))
+				}
+			}))
+			defer server.Close()
+
+			baseClient := client.NewClient(
+				client.WithBaseURL(server.URL),
+				client.WithHTTPClient(server.Client()),
+			)
+			accountingClient, err := NewClient(baseClient)
+			if err != nil {
+				t.Fatalf("NewClient() error = %v", err)
+			}
+
+			journalsService := accountingClient.Journals()
+			iter := journalsService.ListIter(context.Background(), tt.companyID, tt.opts)
+
+			var journals []gen.ManualJournal
+			for iter.Next() {
+				journals = append(journals, iter.Value())
+			}
+
+			err = iter.Err()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ListIter() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			if len(journals) != tt.wantCount {
+				t.Errorf("ListIter() got %d journals, want %d", len(journals), tt.wantCount)
 			}
 		})
 	}
