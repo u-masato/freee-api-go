@@ -1,0 +1,14 @@
+{
+  "amount": 50000,
+  "company_id": 1,
+  "created_at": "",
+  "details": null,
+  "due_amount": 50000,
+  "id": 100,
+  "issue_date": "2024-01-01",
+  "payments": null,
+  "receipts": null,
+  "status": "settled",
+  "type": "income",
+  "updated_at": ""
+}

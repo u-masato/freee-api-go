@@ -119,3 +119,29 @@ func (c *Config) TokenSource(ctx context.Context, token *oauth2.Token) oauth2.To
 func (c *Config) Client(ctx context.Context, token *oauth2.Token) *http.Client {
 	return c.oauth2Config.Client(ctx, token)
 }
+
+// NewConfigWithEndpoint creates a new OAuth2 configuration with custom endpoints.
+//
+// This is primarily useful for testing with a mock OAuth2 server.
+//
+// Parameters:
+//   - clientID: OAuth2 client ID
+//   - clientSecret: OAuth2 client secret
+//   - redirectURL: Callback URL
+//   - scopes: List of permission scopes
+//   - authURL: Custom authorization endpoint URL
+//   - tokenURL: Custom token endpoint URL
+func NewConfigWithEndpoint(clientID, clientSecret, redirectURL string, scopes []string, authURL, tokenURL string) *Config {
+	return &Config{
+		oauth2Config: &oauth2.Config{
+			ClientID:     clientID,
+			ClientSecret: clientSecret,
+			RedirectURL:  redirectURL,
+			Scopes:       scopes,
+			Endpoint: oauth2.Endpoint{
+				AuthURL:  authURL,
+				TokenURL: tokenURL,
+			},
+		},
+	}
+}
