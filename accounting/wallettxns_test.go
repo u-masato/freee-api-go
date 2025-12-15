@@ -334,6 +334,238 @@ func TestWalletTxnService_Delete(t *testing.T) {
 	}
 }
 
+func TestWalletTxnService_List_ErrorCases(t *testing.T) {
+	tests := []struct {
+		name       string
+		companyID  int64
+		opts       *ListWalletTxnsOptions
+		mockStatus int
+		mockBody   string
+		wantErr    bool
+	}{
+		{
+			name:       "server error",
+			companyID:  1,
+			opts:       nil,
+			mockStatus: http.StatusInternalServerError,
+			mockBody:   `{"errors": [{"messages": ["Internal server error"]}]}`,
+			wantErr:    true,
+		},
+		{
+			name:       "unauthorized",
+			companyID:  1,
+			opts:       nil,
+			mockStatus: http.StatusUnauthorized,
+			mockBody:   `{"errors": [{"messages": ["Invalid access token"]}]}`,
+			wantErr:    true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(tt.mockStatus)
+				w.Write([]byte(tt.mockBody))
+			}))
+			defer server.Close()
+
+			baseClient := client.NewClient(client.WithBaseURL(server.URL))
+			accountingClient, err := NewClient(baseClient)
+			if err != nil {
+				t.Fatalf("NewClient() error = %v", err)
+			}
+
+			walletTxnService := accountingClient.WalletTxns()
+			_, err = walletTxnService.List(context.Background(), tt.companyID, tt.opts)
+
+			if (err != nil) != tt.wantErr {
+				t.Errorf("List() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestWalletTxnService_Get_ErrorCases(t *testing.T) {
+	tests := []struct {
+		name       string
+		companyID  int64
+		txnID      int64
+		mockStatus int
+		mockBody   string
+		wantErr    bool
+	}{
+		{
+			name:       "not found",
+			companyID:  1,
+			txnID:      999,
+			mockStatus: http.StatusNotFound,
+			mockBody:   `{"errors": [{"messages": ["Resource not found"]}]}`,
+			wantErr:    true,
+		},
+		{
+			name:       "server error",
+			companyID:  1,
+			txnID:      123,
+			mockStatus: http.StatusInternalServerError,
+			mockBody:   `{"errors": [{"messages": ["Internal server error"]}]}`,
+			wantErr:    true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(tt.mockStatus)
+				w.Write([]byte(tt.mockBody))
+			}))
+			defer server.Close()
+
+			baseClient := client.NewClient(client.WithBaseURL(server.URL))
+			accountingClient, err := NewClient(baseClient)
+			if err != nil {
+				t.Fatalf("NewClient() error = %v", err)
+			}
+
+			walletTxnService := accountingClient.WalletTxns()
+			_, err = walletTxnService.Get(context.Background(), tt.companyID, tt.txnID)
+
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Get() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestWalletTxnService_Create_ErrorCases(t *testing.T) {
+	tests := []struct {
+		name       string
+		mockStatus int
+		mockBody   string
+		wantErr    bool
+	}{
+		{
+			name:       "bad request",
+			mockStatus: http.StatusBadRequest,
+			mockBody:   `{"errors": [{"messages": ["date is required"]}]}`,
+			wantErr:    true,
+		},
+		{
+			name:       "server error",
+			mockStatus: http.StatusInternalServerError,
+			mockBody:   `{"errors": [{"messages": ["Internal server error"]}]}`,
+			wantErr:    true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(tt.mockStatus)
+				w.Write([]byte(tt.mockBody))
+			}))
+			defer server.Close()
+
+			baseClient := client.NewClient(client.WithBaseURL(server.URL))
+			accountingClient, err := NewClient(baseClient)
+			if err != nil {
+				t.Fatalf("NewClient() error = %v", err)
+			}
+
+			params := gen.WalletTxnParams{
+				CompanyId:      1,
+				WalletableId:   12345,
+				WalletableType: "bank_account",
+				Date:           "2024-01-15",
+				Amount:         10000,
+				EntrySide:      "income",
+			}
+
+			walletTxnService := accountingClient.WalletTxns()
+			_, err = walletTxnService.Create(context.Background(), params)
+
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Create() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestWalletTxnService_ListIter_ErrorCases(t *testing.T) {
+	tests := []struct {
+		name      string
+		companyID int64
+		opts      *ListWalletTxnsOptions
+		mockPages []struct {
+			status int
+			body   string
+		}
+		wantErr   bool
+		wantCount int
+	}{
+		{
+			name:      "error on first fetch",
+			companyID: 1,
+			opts:      nil,
+			mockPages: []struct {
+				status int
+				body   string
+			}{
+				{http.StatusInternalServerError, `{"errors": [{"messages": ["Server error"]}]}`},
+			},
+			wantErr:   true,
+			wantCount: 0,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fetchCount := 0
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if fetchCount < len(tt.mockPages) {
+					w.Header().Set("Content-Type", "application/json")
+					w.WriteHeader(tt.mockPages[fetchCount].status)
+					w.Write([]byte(tt.mockPages[fetchCount].body))
+					fetchCount++
+				} else {
+					w.Header().Set("Content-Type", "application/json")
+					w.WriteHeader(http.StatusOK)
+					w.Write([]byte(`{"wallet_txns": []}`))
+				}
+			}))
+			defer server.Close()
+
+			baseClient := client.NewClient(
+				client.WithBaseURL(server.URL),
+				client.WithHTTPClient(server.Client()),
+			)
+			accountingClient, err := NewClient(baseClient)
+			if err != nil {
+				t.Fatalf("NewClient() error = %v", err)
+			}
+
+			walletTxnService := accountingClient.WalletTxns()
+			iter := walletTxnService.ListIter(context.Background(), tt.companyID, tt.opts)
+
+			var txns []gen.WalletTxn
+			for iter.Next() {
+				txns = append(txns, iter.Value())
+			}
+
+			err = iter.Err()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ListIter() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			if len(txns) != tt.wantCount {
+				t.Errorf("ListIter() got %d transactions, want %d", len(txns), tt.wantCount)
+			}
+		})
+	}
+}
+
 func TestWalletTxnService_ListIter(t *testing.T) {
 	tests := []struct {
 		name        string
