@@ -1,0 +1,11 @@
+{
+  "id": 1,
+  "company_id": 1,
+  "issue_date": "2024-01-15",
+  "due_date": "2024-01-31",
+  "amount": 10000,
+  "due_amount": 10000,
+  "type": "expense",
+  "ref_number": "REF-001",
+  "status": "unsettled"
+}
