@@ -34,7 +34,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/muno/freee-api-go/auth"
+	"github.com/u-masato/freee-api-go/auth"
 )
 
 const (

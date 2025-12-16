@@ -12,7 +12,7 @@
 ## 使用例
 
 ```go
-import "github.com/muno/freee-api-go/client"
+import "github.com/u-masato/freee-api-go/client"
 
 c, err := client.NewClient(
     client.WithTokenSource(tokenSource),

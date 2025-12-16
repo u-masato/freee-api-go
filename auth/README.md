@@ -13,7 +13,7 @@ OAuth2認証・認可機能を提供するパッケージ。
 ## 使用例
 
 ```go
-import "github.com/muno/freee-api-go/auth"
+import "github.com/u-masato/freee-api-go/auth"
 
 config := auth.NewConfig(clientID, clientSecret, redirectURL, scopes)
 authURL := config.AuthCodeURL("state")

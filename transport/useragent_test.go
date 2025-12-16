@@ -109,9 +109,9 @@ func TestDefaultUserAgent(t *testing.T) {
 		version  string
 		expected string
 	}{
-		{"0.1.0", "freee-api-go/0.1.0 (+github.com/muno/freee-api-go)"},
-		{"1.0.0", "freee-api-go/1.0.0 (+github.com/muno/freee-api-go)"},
-		{"", "freee-api-go/dev (+github.com/muno/freee-api-go)"},
+		{"0.1.0", "freee-api-go/0.1.0 (+github.com/u-masato/freee-api-go)"},
+		{"1.0.0", "freee-api-go/1.0.0 (+github.com/u-masato/freee-api-go)"},
+		{"", "freee-api-go/dev (+github.com/u-masato/freee-api-go)"},
 	}
 
 	for _, tt := range tests {
@@ -137,7 +137,7 @@ func TestSetBaseUserAgent(t *testing.T) {
 
 func TestWithDefaultUserAgent(t *testing.T) {
 	version := "0.1.0"
-	expectedUA := "freee-api-go/0.1.0 (+github.com/muno/freee-api-go)"
+	expectedUA := "freee-api-go/0.1.0 (+github.com/u-masato/freee-api-go)"
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ua := r.Header.Get("User-Agent")

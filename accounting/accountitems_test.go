@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/muno/freee-api-go/client"
+	"github.com/u-masato/freee-api-go/client"
 )
 
 func TestAccountItemsService_List(t *testing.T) {

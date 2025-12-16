@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/muno/freee-api-go/accounting"
-	"github.com/muno/freee-api-go/tests/integration/mockserver"
+	"github.com/u-masato/freee-api-go/accounting"
+	"github.com/u-masato/freee-api-go/tests/integration/mockserver"
 )
 
 // TestPagination_DealsListIter tests the pagination iterator for deals.

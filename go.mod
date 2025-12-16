@@ -1,4 +1,4 @@
-module github.com/muno/freee-api-go
+module github.com/u-masato/freee-api-go
 
 go 1.24.0
 

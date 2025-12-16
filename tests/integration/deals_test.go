@@ -6,10 +6,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/muno/freee-api-go/accounting"
-	"github.com/muno/freee-api-go/client"
-	"github.com/muno/freee-api-go/internal/gen"
-	"github.com/muno/freee-api-go/tests/integration/mockserver"
+	"github.com/u-masato/freee-api-go/accounting"
+	"github.com/u-masato/freee-api-go/client"
+	"github.com/u-masato/freee-api-go/internal/gen"
+	"github.com/u-masato/freee-api-go/tests/integration/mockserver"
 	"golang.org/x/oauth2"
 )
 

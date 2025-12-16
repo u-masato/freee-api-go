@@ -11,7 +11,7 @@
 | Phase 3: HTTP Transport層 | ✅ Completed | 7/7 |
 | Phase 4: Generated API Client | ✅ Completed | 7/7 |
 | Phase 5: Accounting Facade | 🔄 In Progress | 3/8 |
-| Phase 6: ドキュメント・サンプル | 🔲 Not Started | 0/6 |
+| Phase 6: ドキュメント・サンプル | 🔄 In Progress | 1/6 |
 | Phase 7: 拡張・改善 | 🔄 In Progress | 1/5 |
 
 **凡例**: 🔲 未着手 | 🔄 進行中 | ✅ 完了
@@ -29,7 +29,7 @@
 
 ### 1.1 リポジトリ初期化 ✅
 
-- [x] `go.mod` 初期化（`go mod init github.com/muno/freee-api-go`）
+- [x] `go.mod` 初期化（`go mod init github.com/u-masato/freee-api-go`）
 - [x] `.gitignore` 作成（Go標準 + IDE設定）
 - [x] `LICENSE` 作成（MIT License）
 - [x] `.editorconfig` 作成（コーディングスタイル統一）
@@ -539,11 +539,16 @@ mkdir -p {client,auth,accounting,transport,internal/{gen,testutil},examples/{oau
 - [ ] サポート対象バージョン
 - [ ] セキュリティベストプラクティス
 
-### 6.6 APIリファレンス生成
+### 6.6 pkg.go.dev 公開準備 ✅
 
-- [ ] `godoc` または `pkgsite` でローカル確認
-- [ ] pkg.go.dev 公開準備
-- [ ] バッジ・リンク追加
+- [x] `godoc` でローカル確認
+- [x] pkg.go.dev 公開準備
+  - [x] go.mod モジュールパスを正しいリポジトリURLに修正
+  - [x] 全ソースファイルのimportパスを更新
+- [x] README.md にpkg.go.devリンク・バッジ（既存）
+- [x] Go Report Card バッジ（既存）
+- [x] ビルド・テスト確認
+- [ ] 初回リリースタグ作成（v0.1.0）- マージ後に実施
 
 **Phase 6 完了条件**: ドキュメント完備し、v0.1.0正式リリース
 

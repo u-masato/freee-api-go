@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/muno/freee-api-go/client"
-	"github.com/muno/freee-api-go/transport"
+	"github.com/u-masato/freee-api-go/client"
+	"github.com/u-masato/freee-api-go/transport"
 	"golang.org/x/oauth2"
 )
 

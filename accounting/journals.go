@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/muno/freee-api-go/internal/gen"
+	"github.com/u-masato/freee-api-go/internal/gen"
 )
 
 // Note: JournalsService type is declared in services.go

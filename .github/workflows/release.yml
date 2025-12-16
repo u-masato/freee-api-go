@@ -54,7 +54,7 @@ jobs:
             ## Installation
 
             \`\`\`bash
-            go get github.com/muno/freee-api-go@${{ github.ref_name }}
+            go get github.com/u-masato/freee-api-go@${{ github.ref_name }}
             \`\`\`
           draft: false
           prerelease: ${{ contains(github.ref_name, 'rc') || contains(github.ref_name, 'beta') || contains(github.ref_name, 'alpha') }}

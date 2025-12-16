@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/muno/freee-api-go/auth"
+	"github.com/u-masato/freee-api-go/auth"
 	"golang.org/x/oauth2"
 )
 

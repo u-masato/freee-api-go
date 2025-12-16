@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/muno/freee-api-go/transport"
+	"github.com/u-masato/freee-api-go/transport"
 )
 
 // ExampleNewTransport は基本的なトランスポート作成を示します。
@@ -116,5 +116,5 @@ func ExampleDefaultUserAgent() {
 	ua := transport.DefaultUserAgent("1.0.0")
 	fmt.Println("User-Agent:", ua)
 	// Output:
-	// User-Agent: freee-api-go/1.0.0 (+github.com/muno/freee-api-go)
+	// User-Agent: freee-api-go/1.0.0 (+github.com/u-masato/freee-api-go)
 }

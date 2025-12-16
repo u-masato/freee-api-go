@@ -130,8 +130,8 @@
 package accounting
 
 import (
-	"github.com/muno/freee-api-go/client"
-	"github.com/muno/freee-api-go/internal/gen"
+	"github.com/u-masato/freee-api-go/client"
+	"github.com/u-masato/freee-api-go/internal/gen"
 )
 
 // Client is the main facade for the freee Accounting API.
