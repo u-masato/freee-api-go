@@ -157,11 +157,15 @@ type Client struct {
 	genClient *gen.ClientWithResponses
 
 	// Service clients (lazy initialization)
-	deals     *DealsService
-	journals  *JournalsService
-	walletTxn *WalletTxnService
-	transfers *TransfersService
-	partners  *PartnersService
+	deals        *DealsService
+	journals     *JournalsService
+	walletTxn    *WalletTxnService
+	transfers    *TransfersService
+	partners     *PartnersService
+	accountItems *AccountItemsService
+	items        *ItemsService
+	sections     *SectionsService
+	tags         *TagsService
 }
 
 // NewClient creates a new accounting facade client.
@@ -279,6 +283,78 @@ func (c *Client) Partners() *PartnersService {
 		}
 	}
 	return c.partners
+}
+
+// AccountItems returns the AccountItemsService for managing account items (勘定科目).
+//
+// The service is lazily initialized on first access.
+//
+// Example:
+//
+//	accountItems := accountingClient.AccountItems()
+//	list, err := accountItems.List(ctx, companyID, nil)
+func (c *Client) AccountItems() *AccountItemsService {
+	if c.accountItems == nil {
+		c.accountItems = &AccountItemsService{
+			client:    c.client,
+			genClient: c.genClient,
+		}
+	}
+	return c.accountItems
+}
+
+// Items returns the ItemsService for managing items (品目).
+//
+// The service is lazily initialized on first access.
+//
+// Example:
+//
+//	items := accountingClient.Items()
+//	list, err := items.List(ctx, companyID, nil)
+func (c *Client) Items() *ItemsService {
+	if c.items == nil {
+		c.items = &ItemsService{
+			client:    c.client,
+			genClient: c.genClient,
+		}
+	}
+	return c.items
+}
+
+// Sections returns the SectionsService for managing sections (部門).
+//
+// The service is lazily initialized on first access.
+//
+// Example:
+//
+//	sections := accountingClient.Sections()
+//	list, err := sections.List(ctx, companyID, nil)
+func (c *Client) Sections() *SectionsService {
+	if c.sections == nil {
+		c.sections = &SectionsService{
+			client:    c.client,
+			genClient: c.genClient,
+		}
+	}
+	return c.sections
+}
+
+// Tags returns the TagsService for managing tags (メモタグ).
+//
+// The service is lazily initialized on first access.
+//
+// Example:
+//
+//	tags := accountingClient.Tags()
+//	list, err := tags.List(ctx, companyID, nil)
+func (c *Client) Tags() *TagsService {
+	if c.tags == nil {
+		c.tags = &TagsService{
+			client:    c.client,
+			genClient: c.genClient,
+		}
+	}
+	return c.tags
 }
 
 // BaseClient returns the underlying base client.

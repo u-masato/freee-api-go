@@ -92,3 +92,70 @@ type PartnersService struct {
 	client    *client.Client
 	genClient *gen.ClientWithResponses
 }
+
+// AccountItemsService provides operations for managing account items (勘定科目).
+//
+// Account items represent accounts used in double-entry bookkeeping,
+// such as cash, accounts receivable, sales, etc.
+//
+// All methods require a context.Context for cancellation and timeouts.
+//
+// Example:
+//
+//	accountItems := accountingClient.AccountItems()
+//	list, err := accountItems.List(ctx, companyID, nil)
+//	item, err := accountItems.Get(ctx, companyID, accountItemID)
+type AccountItemsService struct {
+	client    *client.Client
+	genClient *gen.ClientWithResponses
+}
+
+// ItemsService provides operations for managing items (品目).
+//
+// Items represent product or service categories that can be associated
+// with transactions.
+//
+// All methods require a context.Context for cancellation and timeouts.
+//
+// Example:
+//
+//	items := accountingClient.Items()
+//	list, err := items.List(ctx, companyID, nil)
+//	item, err := items.Get(ctx, companyID, itemID)
+type ItemsService struct {
+	client    *client.Client
+	genClient *gen.ClientWithResponses
+}
+
+// SectionsService provides operations for managing sections (部門).
+//
+// Sections represent organizational units or departments within a company.
+//
+// All methods require a context.Context for cancellation and timeouts.
+//
+// Example:
+//
+//	sections := accountingClient.Sections()
+//	list, err := sections.List(ctx, companyID, nil)
+//	section, err := sections.Get(ctx, companyID, sectionID)
+type SectionsService struct {
+	client    *client.Client
+	genClient *gen.ClientWithResponses
+}
+
+// TagsService provides operations for managing tags (メモタグ).
+//
+// Tags are labels that can be attached to transactions for additional
+// categorization and filtering.
+//
+// All methods require a context.Context for cancellation and timeouts.
+//
+// Example:
+//
+//	tags := accountingClient.Tags()
+//	list, err := tags.List(ctx, companyID, nil)
+//	tag, err := tags.Get(ctx, companyID, tagID)
+type TagsService struct {
+	client    *client.Client
+	genClient *gen.ClientWithResponses
+}
