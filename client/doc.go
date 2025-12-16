@@ -1,46 +1,45 @@
-// Package client provides the main client interface for the freee API.
+// Package client はfreee APIのメインクライアントインターフェースを提供します。
 //
-// # Overview
+// # 概要
 //
-// The client package is the primary entry point for using the freee-api-go SDK.
-// It provides a flexible, configurable Client type that handles HTTP communication,
-// authentication, and configuration management.
+// clientパッケージはfreee-api-go SDKを使用するための主要なエントリーポイントです。
+// HTTP通信、認証、設定管理を処理する柔軟で設定可能なClient型を提供します。
 //
-// # Basic Usage
+// # 基本的な使い方
 //
-// Create a client with default settings:
+// デフォルト設定でクライアントを作成：
 //
 //	import "github.com/u-masato/freee-api-go/client"
 //
-//	client := client.NewClient()
+//	c := client.NewClient()
 //
-// # Authentication
+// # 認証
 //
-// The most common use case is to create a client with OAuth2 authentication:
+// 最も一般的なユースケースは、OAuth2認証を使用してクライアントを作成することです：
 //
 //	import (
 //	    "github.com/u-masato/freee-api-go/auth"
 //	    "github.com/u-masato/freee-api-go/client"
 //	)
 //
-//	// Configure OAuth2
+//	// OAuth2を設定
 //	config := auth.NewConfig(clientID, clientSecret, redirectURL, scopes)
 //
-//	// Exchange authorization code for token
+//	// 認可コードをトークンに交換
 //	token, err := config.Exchange(ctx, code)
 //	if err != nil {
 //	    log.Fatal(err)
 //	}
 //
-//	// Create token source for automatic refresh
+//	// 自動更新のためのTokenSourceを作成
 //	tokenSource := config.TokenSource(ctx, token)
 //
-//	// Create client with token source
-//	client := client.NewClient(client.WithTokenSource(tokenSource))
+//	// TokenSourceを使用してクライアントを作成
+//	c := client.NewClient(client.WithTokenSource(tokenSource))
 //
-// # Advanced Configuration
+// # 高度な設定
 //
-// Customize the client with additional options:
+// 追加オプションでクライアントをカスタマイズ：
 //
 //	import (
 //	    "time"
@@ -48,77 +47,102 @@
 //	    "github.com/u-masato/freee-api-go/transport"
 //	)
 //
-//	// Create custom transport with rate limiting and retries
-//	transport := transport.NewTransport(
-//	    transport.WithRateLimit(10, 5),        // 10 req/sec, burst 5
-//	    transport.WithRetry(3, time.Second),   // 3 retries, exponential backoff
-//	    transport.WithLogging(logger),         // Structured logging
+//	// レート制限とリトライを備えたカスタムトランスポートを作成
+//	t := transport.NewTransport(
+//	    transport.WithRateLimit(10, 5),        // 10リクエスト/秒、バースト5
+//	    transport.WithRetry(3, time.Second),   // 3回リトライ、指数バックオフ
+//	    transport.WithLogging(logger),         // 構造化ロギング
 //	)
 //
-//	// Create OAuth2 client with custom transport
+//	// カスタムトランスポートを使用してOAuth2クライアントを作成
 //	httpClient := &http.Client{
 //	    Transport: &oauth2.Transport{
 //	        Source: tokenSource,
-//	        Base:   transport,
+//	        Base:   t,
 //	    },
 //	}
 //
-//	// Create client with all customizations
-//	client := client.NewClient(
+//	// すべてのカスタマイズを使用してクライアントを作成
+//	c := client.NewClient(
 //	    client.WithHTTPClient(httpClient),
 //	    client.WithUserAgent("my-app/1.0.0"),
 //	)
 //
-// # Making Requests
+// # リクエストの実行
 //
-// Use the client's Do method to make authenticated requests:
+// クライアントのDoメソッドを使用して認証済みリクエストを実行：
 //
-//	req, err := http.NewRequestWithContext(ctx, "GET", client.BaseURL()+"/api/1/companies", nil)
+//	req, err := http.NewRequestWithContext(ctx, "GET", c.BaseURL()+"/api/1/companies", nil)
 //	if err != nil {
 //	    return err
 //	}
 //
-//	resp, err := client.Do(req)
+//	resp, err := c.Do(req)
 //	if err != nil {
 //	    return err
 //	}
 //	defer resp.Body.Close()
 //
-//	// Process response...
+//	// レスポンスを処理...
 //
-// # Architecture
+// # エラー処理
 //
-// The client package is designed to be the foundation layer that higher-level
-// packages (like accounting/) build upon. It handles:
+// このパッケージはfreee APIエラー用の構造化されたエラー型を提供します：
 //
-//   - HTTP client configuration and lifecycle
-//   - Base URL management
-//   - OAuth2 token source integration
-//   - User-Agent header management
-//   - Request execution with automatic header injection
+//   - [FreeeError]: ステータスコードとメッセージを含むAPIエラー
+//   - [ErrBadRequest]: 400 Bad Requestエラー
+//   - [ErrUnauthorized]: 401 Unauthorizedエラー
+//   - [ErrForbidden]: 403 Forbiddenエラー
+//   - [ErrNotFound]: 404 Not Foundエラー
+//   - [ErrTooManyRequests]: 429 Too Many Requestsエラー
 //
-// Higher-level packages provide user-friendly facades that hide the complexity
-// of the underlying API and provide type-safe, idiomatic Go interfaces.
+// エラーチェックの例：
 //
-// # Design Principles
+//	resp, err := c.Do(req)
+//	if err != nil {
+//	    if client.IsUnauthorizedError(err) {
+//	        // トークン期限切れ、再認証
+//	    }
+//	    if client.IsTooManyRequestsError(err) {
+//	        // レート制限、待機してリトライ
+//	    }
+//	    return err
+//	}
 //
-// The client package follows these design principles:
+// # アーキテクチャ
 //
-//  1. Flexibility: Uses functional options pattern for easy customization
-//  2. Sensible Defaults: Works out of the box with minimal configuration
-//  3. Composability: Integrates cleanly with auth and transport packages
-//  4. Testability: Easy to mock for testing (use WithBaseURL for test servers)
-//  5. Explicitness: Clear, documented behavior with no hidden magic
+// clientパッケージは、より高レベルのパッケージ（accounting/など）が
+// 構築する基盤レイヤーとして設計されています。以下を処理します：
 //
-// # Thread Safety
+//   - HTTPクライアントの設定とライフサイクル
+//   - ベースURL管理
+//   - OAuth2 TokenSource統合
+//   - User-Agentヘッダー管理
+//   - 自動ヘッダー注入によるリクエスト実行
 //
-// A Client is safe for concurrent use by multiple goroutines. The underlying
-// http.Client handles concurrent requests safely.
+// 高レベルのパッケージは、基盤となるAPIの複雑さを隠し、
+// 型安全でGoらしいインターフェースを提供するユーザーフレンドリーなファサードを提供します。
 //
-// # Context Handling
+// # 設計原則
 //
-// The Client respects context cancellation and timeouts. When using WithTokenSource,
-// the context provided to WithContext (or context.Background() by default) is used
-// for token refresh operations. For individual requests, use http.NewRequestWithContext
-// to provide request-specific contexts.
+// clientパッケージは以下の設計原則に従います：
+//
+//  1. 柔軟性: 簡単なカスタマイズのための関数オプションパターン
+//  2. 適切なデフォルト: 最小限の設定で動作
+//  3. 組み合わせ可能性: authおよびtransportパッケージとクリーンに統合
+//  4. テスト容易性: モックが容易（テストサーバーにはWithBaseURLを使用）
+//  5. 明示性: 隠れたマジックのない明確で文書化された動作
+//
+// # スレッドセーフティ
+//
+// Clientは複数のゴルーチンによる並行使用に対して安全です。
+// 基盤となるhttp.Clientは並行リクエストを安全に処理します。
+//
+// # コンテキスト処理
+//
+// Clientはコンテキストのキャンセルとタイムアウトを尊重します。
+// WithTokenSourceを使用する場合、WithContextに提供されたコンテキスト
+// （またはデフォルトでcontext.Background()）がトークン更新操作に使用されます。
+// 個々のリクエストには、http.NewRequestWithContextを使用して
+// リクエスト固有のコンテキストを提供してください。
 package client
