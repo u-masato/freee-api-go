@@ -15,7 +15,7 @@ freee 会計API用のFacadeパッケージ。
 ## 使用例
 
 ```go
-import "github.com/muno/freee-api-go/accounting"
+import "github.com/u-masato/freee-api-go/accounting"
 
 ac := accounting.NewClient(baseClient)
 

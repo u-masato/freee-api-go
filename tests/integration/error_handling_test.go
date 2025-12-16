@@ -5,9 +5,9 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/muno/freee-api-go/client"
-	"github.com/muno/freee-api-go/internal/gen"
-	"github.com/muno/freee-api-go/tests/integration/mockserver"
+	"github.com/u-masato/freee-api-go/client"
+	"github.com/u-masato/freee-api-go/internal/gen"
+	"github.com/u-masato/freee-api-go/tests/integration/mockserver"
 )
 
 // TestErrorHandling_Unauthorized tests 401 Unauthorized error handling.

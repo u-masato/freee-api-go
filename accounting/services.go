@@ -1,8 +1,8 @@
 package accounting
 
 import (
-	"github.com/muno/freee-api-go/client"
-	"github.com/muno/freee-api-go/internal/gen"
+	"github.com/u-masato/freee-api-go/client"
+	"github.com/u-masato/freee-api-go/internal/gen"
 )
 
 // DealsService provides operations for managing deals (取引).

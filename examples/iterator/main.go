@@ -6,9 +6,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/muno/freee-api-go/accounting"
-	"github.com/muno/freee-api-go/auth"
-	"github.com/muno/freee-api-go/client"
+	"github.com/u-masato/freee-api-go/accounting"
+	"github.com/u-masato/freee-api-go/auth"
+	"github.com/u-masato/freee-api-go/client"
 )
 
 func main() {

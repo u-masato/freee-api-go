@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/muno/freee-api-go/tests/integration/golden"
-	"github.com/muno/freee-api-go/tests/integration/mockserver"
+	"github.com/u-masato/freee-api-go/tests/integration/golden"
+	"github.com/u-masato/freee-api-go/tests/integration/mockserver"
 )
 
 // TestGolden_DealResponse tests that deal responses match golden files.
