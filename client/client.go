@@ -1,18 +1,3 @@
-// Package client provides the main client interface for the freee API.
-//
-// This package implements the primary Client type that users will interact with
-// when using the freee-api-go SDK. It handles:
-//   - HTTP client configuration
-//   - Base URL management
-//   - OAuth2 token source integration
-//   - User agent and transport customization
-//
-// The Client uses a functional options pattern for flexible configuration:
-//
-//	client := client.NewClient(
-//	    client.WithTokenSource(tokenSource),
-//	    client.WithUserAgent("my-app/1.0.0"),
-//	)
 package client
 
 import (
