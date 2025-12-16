@@ -1,35 +1,35 @@
 ---
-name: Question
-about: Ask a question about using freee-api-go
+name: 質問
+about: freee-api-go の使用方法について質問
 title: '[QUESTION] '
 labels: question
 assignees: ''
 ---
 
-## Question
-Please describe your question clearly.
+## 質問
+質問を明確に説明してください。
 
-## Context
-What are you trying to accomplish?
+## 状況
+何を達成しようとしていますか？
 
-## What I've tried
-- I've checked the README.md
-- I've checked the examples in the examples/ directory
-- I've searched existing issues
-- I've read the documentation at [relevant docs]
+## 試したこと
+- README.md を確認しました
+- examples/ ディレクトリのサンプルを確認しました
+- 既存の Issue を検索しました
+- [関連するドキュメント] を読みました
 
-## Code sample (if applicable)
+## コードサンプル（該当する場合）
 ```go
-// Please provide relevant code if applicable
+// 該当する場合は関連するコードを提供してください
 package main
 
 func main() {
-    // Your code here
+    // ここにコードを記述
 }
 ```
 
-## Expected outcome
-What do you expect to happen or what are you trying to achieve?
+## 期待する結果
+何が起こることを期待していますか、または何を達成しようとしていますか？
 
-## Additional context
-Add any other context about the question here.
+## 追加情報
+質問に関するその他の情報があればここに追加してください。

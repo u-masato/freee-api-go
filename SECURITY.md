@@ -1,141 +1,141 @@
-# Security Policy
+# セキュリティポリシー
 
-## Supported Versions
+## サポートバージョン
 
-This section tells you which versions of freee-api-go are currently being supported with security updates.
+このセクションでは、現在セキュリティアップデートがサポートされている freee-api-go のバージョンを説明します。
 
-| Version | Supported          |
+| バージョン | サポート状況 |
 | ------- | ------------------ |
 | 0.x.x   | :white_check_mark: |
 
-**Note**: As this project is in pre-1.0 development, we support only the latest release. Once we reach 1.0, we will provide clearer long-term support policies.
+**注意**: このプロジェクトは1.0未満の開発段階にあるため、最新リリースのみをサポートしています。1.0に到達した後、より明確な長期サポートポリシーを提供する予定です。
 
-## Reporting a Vulnerability
+## 脆弱性の報告
 
-We take the security of freee-api-go seriously. If you discover a security vulnerability, please report it responsibly.
+私たちは freee-api-go のセキュリティを真剣に受け止めています。セキュリティ上の脆弱性を発見した場合は、責任ある方法で報告してください。
 
-### How to Report
+### 報告方法
 
-**Please DO NOT open a public GitHub issue for security vulnerabilities.**
+**セキュリティ脆弱性については、公開の GitHub Issue を作成しないでください。**
 
-Instead, please report security vulnerabilities through one of the following methods:
+代わりに、以下のいずれかの方法でセキュリティ脆弱性を報告してください：
 
-1. **GitHub Security Advisories** (Preferred)
-   - Go to https://github.com/u-masato/freee-api-go/security/advisories
-   - Click "Report a vulnerability"
-   - Provide detailed information about the vulnerability
+1. **GitHub Security Advisories**（推奨）
+   - https://github.com/u-masato/freee-api-go/security/advisories にアクセス
+   - 「Report a vulnerability」をクリック
+   - 脆弱性に関する詳細情報を提供
 
-2. **Email** (Alternative)
-   - Send an email to: [Security contact to be added]
-   - Use the subject line: `[SECURITY] freee-api-go vulnerability report`
+2. **メール**（代替手段）
+   - 宛先: [セキュリティ連絡先を追加予定]
+   - 件名: `[SECURITY] freee-api-go 脆弱性報告`
 
-### What to Include in Your Report
+### 報告に含めるべき情報
 
-Please include as much of the following information as possible:
+可能な限り以下の情報を含めてください：
 
-- **Description**: A clear description of the vulnerability
-- **Impact**: What could an attacker do with this vulnerability?
-- **Affected versions**: Which versions of freee-api-go are affected?
-- **Steps to reproduce**: Detailed steps to reproduce the vulnerability
-- **Proof of concept**: If possible, provide code that demonstrates the issue
-- **Suggested fix**: If you have ideas on how to fix it, please share
+- **説明**: 脆弱性の明確な説明
+- **影響**: 攻撃者がこの脆弱性で何ができるか？
+- **影響バージョン**: freee-api-go のどのバージョンが影響を受けるか？
+- **再現手順**: 脆弱性を再現するための詳細な手順
+- **概念実証**: 可能であれば、問題を示すコードを提供
+- **修正案**: 修正方法についてのアイデアがあれば共有
 
-Example report structure:
+報告例：
 
 ```
-Subject: [SECURITY] OAuth2 token exposure in logs
+件名: [SECURITY] ログでの OAuth2 トークン露出
 
-Description:
-OAuth2 access tokens are being logged in plaintext when debug logging is enabled.
+説明:
+デバッグログが有効な場合、OAuth2 アクセストークンが平文でログに記録されています。
 
-Impact:
-Attackers with access to application logs could steal user access tokens and
-impersonate users to access their freee accounting data.
+影響:
+アプリケーションログにアクセスできる攻撃者がユーザーのアクセストークンを盗み、
+ユーザーになりすまして freee 会計データにアクセスする可能性があります。
 
-Affected versions:
-All versions up to and including v0.2.0
+影響バージョン:
+v0.2.0 を含むそれ以前の全バージョン
 
-Steps to reproduce:
-1. Enable debug logging
-2. Perform OAuth2 authentication
-3. Check logs - access token visible in plaintext
+再現手順:
+1. デバッグログを有効にする
+2. OAuth2 認証を実行
+3. ログを確認 - アクセストークンが平文で表示される
 
-Proof of concept:
-[Code sample or log excerpt]
+概念実証:
+[コードサンプルまたはログ抜粋]
 
-Suggested fix:
-Mask sensitive headers in LoggingRoundTripper (already partially implemented
-for Authorization header, but may need additional coverage).
+修正案:
+LoggingRoundTripper で機密ヘッダーをマスク（Authorization ヘッダーは
+既に部分的に実装済みだが、追加のカバレッジが必要な可能性あり）
 ```
 
-### Response Timeline
+### 対応タイムライン
 
-- **Initial response**: Within 48 hours, we'll acknowledge receipt of your report
-- **Status update**: Within 5 business days, we'll provide an initial assessment
-- **Fix timeline**: We aim to release security fixes within 30 days for critical issues
+- **初期対応**: 48時間以内に報告の受領を確認します
+- **状況更新**: 5営業日以内に初期評価を提供します
+- **修正タイムライン**: 重大な問題については30日以内のセキュリティ修正リリースを目指します
 
-### What to Expect
+### 期待できること
 
-1. **Acknowledgment**: We'll confirm we received your report
-2. **Investigation**: We'll investigate and validate the vulnerability
-3. **Fix development**: We'll develop and test a fix
-4. **Coordinated disclosure**: We'll coordinate the release of the fix and public disclosure
-5. **Credit**: With your permission, we'll credit you in the security advisory
+1. **確認**: 報告を受け取ったことを確認します
+2. **調査**: 脆弱性を調査し、検証します
+3. **修正開発**: 修正を開発し、テストします
+4. **協調的開示**: 修正のリリースと公開開示を調整します
+5. **クレジット**: 許可があれば、セキュリティアドバイザリであなたをクレジットします
 
-### Security Advisory Process
+### セキュリティアドバイザリプロセス
 
-When a security vulnerability is confirmed:
+セキュリティ脆弱性が確認された場合：
 
-1. We'll create a private security advisory on GitHub
-2. We'll develop a fix in a private repository fork
-3. We'll release a patched version
-4. We'll publish the security advisory with details
-5. We'll notify users through GitHub releases and README
+1. GitHub でプライベートセキュリティアドバイザリを作成します
+2. プライベートリポジトリフォークで修正を開発します
+3. パッチ版をリリースします
+4. 詳細を含むセキュリティアドバイザリを公開します
+5. GitHub リリースと README でユーザーに通知します
 
-## Security Best Practices
+## セキュリティベストプラクティス
 
-When using freee-api-go, follow these security best practices:
+freee-api-go を使用する際は、以下のセキュリティベストプラクティスに従ってください：
 
-### 1. Token Management
+### 1. トークン管理
 
-**DO**:
-- Store OAuth2 tokens securely with appropriate file permissions (0600)
-- Use the built-in `TokenSource` with automatic refresh
-- Invalidate tokens when users log out or revoke access
-- Use environment variables or secure vaults for client credentials
+**推奨**:
+- 適切なファイル権限（0600）で OAuth2 トークンを安全に保存
+- 自動リフレッシュ機能を持つ組み込みの `TokenSource` を使用
+- ユーザーがログアウトまたはアクセスを取り消した際にトークンを無効化
+- クライアント認証情報には環境変数またはセキュアな保管庫を使用
 
-**DON'T**:
-- Commit tokens to version control
-- Store tokens in publicly readable files
-- Share tokens between different users or applications
-- Log tokens in plaintext
+**禁止**:
+- トークンをバージョン管理にコミットしない
+- 公開読み取り可能なファイルにトークンを保存しない
+- 異なるユーザーやアプリケーション間でトークンを共有しない
+- トークンを平文でログに記録しない
 
-Example:
+例：
 ```go
-// GOOD: Use file-based token storage with secure permissions
+// 良い例: セキュアな権限でファイルベースのトークン保存を使用
 tokenSource, err := auth.NewCachedTokenSource(ctx, config, token, "token.json")
 
-// BAD: Don't hardcode tokens
-token := &oauth2.Token{AccessToken: "hardcoded-token"} // NEVER DO THIS
+// 悪い例: トークンをハードコードしない
+token := &oauth2.Token{AccessToken: "hardcoded-token"} // 絶対にしないでください
 ```
 
-### 2. Client Credentials
+### 2. クライアント認証情報
 
-**DO**:
-- Store `client_id` and `client_secret` in environment variables or secure vaults
-- Use different credentials for development, staging, and production
-- Rotate credentials periodically
-- Restrict OAuth2 scopes to minimum required permissions
+**推奨**:
+- `client_id` と `client_secret` を環境変数またはセキュアな保管庫に保存
+- 開発、ステージング、本番で異なる認証情報を使用
+- 認証情報を定期的にローテーション
+- OAuth2 スコープを必要最小限に制限
 
-**DON'T**:
-- Commit credentials to version control
-- Share production credentials with developers
-- Use production credentials in automated tests
-- Grant excessive OAuth2 scopes
+**禁止**:
+- 認証情報をバージョン管理にコミットしない
+- 本番認証情報を開発者と共有しない
+- 自動テストで本番認証情報を使用しない
+- 過剰な OAuth2 スコープを付与しない
 
-Example:
+例：
 ```go
-// GOOD: Use environment variables
+// 良い例: 環境変数を使用
 clientID := os.Getenv("FREEE_CLIENT_ID")
 clientSecret := os.Getenv("FREEE_CLIENT_SECRET")
 
@@ -143,172 +143,172 @@ config := auth.NewConfig(
     clientID,
     clientSecret,
     redirectURL,
-    []string{"read", "write"}, // Only request needed scopes
+    []string{"read", "write"}, // 必要なスコープのみ要求
 )
 ```
 
-### 3. Secure Communication
+### 3. 安全な通信
 
-**DO**:
-- Always use HTTPS endpoints (freee API requires HTTPS)
-- Validate TLS certificates (default in Go's http.Client)
-- Use the latest stable version of freee-api-go
-- Keep dependencies up to date
+**推奨**:
+- 常に HTTPS エンドポイントを使用（freee API は HTTPS 必須）
+- TLS 証明書を検証（Go の http.Client のデフォルト動作）
+- freee-api-go の最新安定版を使用
+- 依存関係を最新に保つ
 
-**DON'T**:
-- Disable TLS certificate verification
-- Use custom HTTP transports without understanding security implications
-- Ignore TLS/SSL warnings
+**禁止**:
+- TLS 証明書検証を無効にしない
+- セキュリティの影響を理解せずにカスタム HTTP トランスポートを使用しない
+- TLS/SSL 警告を無視しない
 
-### 4. Input Validation
+### 4. 入力検証
 
-**DO**:
-- Validate all user input before passing to API calls
-- Sanitize data displayed in logs
-- Use parameterized queries if building any SQL/database layers
-- Implement rate limiting to prevent abuse
+**推奨**:
+- API 呼び出しに渡す前にすべてのユーザー入力を検証
+- ログに表示するデータをサニタイズ
+- SQL/データベース層を構築する場合はパラメータ化クエリを使用
+- 悪用を防ぐためにレート制限を実装
 
-**DON'T**:
-- Trust user input without validation
-- Log sensitive user data (personal info, financial data)
-- Expose detailed error messages to end users
+**禁止**:
+- 検証なしでユーザー入力を信頼しない
+- 機密性の高いユーザーデータ（個人情報、財務データ）をログに記録しない
+- エンドユーザーに詳細なエラーメッセージを公開しない
 
-### 5. Logging
+### 5. ログ記録
 
-**DO**:
-- Use the built-in `LoggingRoundTripper` which masks sensitive headers
-- Review logs regularly for suspicious activity
-- Implement log rotation and retention policies
-- Monitor for unusual API usage patterns
+**推奨**:
+- 機密ヘッダーをマスクする組み込みの `LoggingRoundTripper` を使用
+- 不審な活動がないかログを定期的にレビュー
+- ログローテーションと保持ポリシーを実装
+- 異常な API 使用パターンを監視
 
-**DON'T**:
-- Log full request/response bodies containing sensitive data
-- Store logs in publicly accessible locations
-- Keep logs indefinitely without review
+**禁止**:
+- 機密データを含む完全なリクエスト/レスポンスボディをログに記録しない
+- 公開アクセス可能な場所にログを保存しない
+- レビューなしでログを無期限に保持しない
 
-The `LoggingRoundTripper` automatically masks these sensitive headers:
+`LoggingRoundTripper` は以下の機密ヘッダーを自動的にマスクします：
 - `Authorization`
 - `Cookie` / `Set-Cookie`
 - `X-Api-Key` / `Api-Key`
 
-### 6. Error Handling
+### 6. エラーハンドリング
 
-**DO**:
-- Handle errors gracefully without exposing internal details
-- Log errors with context for debugging
-- Implement appropriate retry logic for transient failures
-- Use structured error types for better error analysis
+**推奨**:
+- 内部の詳細を公開せずにエラーを適切に処理
+- デバッグ用にコンテキストを含めてエラーをログ記録
+- 一時的な障害に対して適切なリトライロジックを実装
+- より良いエラー分析のために構造化されたエラー型を使用
 
-**DON'T**:
-- Return raw error messages to end users
-- Ignore errors silently
-- Expose stack traces in production
+**禁止**:
+- エンドユーザーに生のエラーメッセージを返さない
+- エラーを静かに無視しない
+- 本番環境でスタックトレースを公開しない
 
-Example:
+例：
 ```go
-// GOOD: Handle errors with context
+// 良い例: コンテキストを含めてエラーを処理
 deal, err := dealsService.Get(ctx, companyID, dealID)
 if err != nil {
-    log.Printf("failed to fetch deal %d: %v", dealID, err)
-    return fmt.Errorf("failed to retrieve transaction: %w", err)
+    log.Printf("取引 %d の取得に失敗: %v", dealID, err)
+    return fmt.Errorf("取引の取得に失敗しました: %w", err)
 }
 
-// BAD: Expose raw errors to users
+// 悪い例: ユーザーに生のエラーを公開
 deal, err := dealsService.Get(ctx, companyID, dealID)
 if err != nil {
-    return err // Don't expose internal error details
+    return err // 内部のエラー詳細を公開しない
 }
 ```
 
-### 7. Dependency Management
+### 7. 依存関係管理
 
-**DO**:
-- Regularly update dependencies using `go get -u`
-- Monitor security advisories for dependencies
-- Use `go mod verify` to ensure dependency integrity
-- Review dependency changes before updating
+**推奨**:
+- `go get -u` を使用して定期的に依存関係を更新
+- 依存関係のセキュリティアドバイザリを監視
+- 依存関係の整合性を確保するために `go mod verify` を使用
+- 更新前に依存関係の変更をレビュー
 
-**DON'T**:
-- Use outdated dependencies with known vulnerabilities
-- Ignore security updates
-- Add unnecessary dependencies
+**禁止**:
+- 既知の脆弱性がある古い依存関係を使用しない
+- セキュリティアップデートを無視しない
+- 不要な依存関係を追加しない
 
-Run periodically:
+定期的に実行：
 ```bash
-# Update dependencies
+# 依存関係を更新
 go get -u ./...
 go mod tidy
 
-# Check for known vulnerabilities (requires govulncheck)
+# 既知の脆弱性をチェック（govulncheck が必要）
 govulncheck ./...
 ```
 
-### 8. Rate Limiting
+### 8. レート制限
 
-**DO**:
-- Use the built-in `RateLimitRoundTripper` to respect API limits
-- Implement exponential backoff for retries
-- Monitor API usage to avoid hitting limits
-- Handle rate limit errors gracefully
+**推奨**:
+- API 制限を尊重するために組み込みの `RateLimitRoundTripper` を使用
+- リトライには指数バックオフを実装
+- 制限に達しないように API 使用量を監視
+- レート制限エラーを適切に処理
 
-**DON'T**:
-- Ignore rate limits
-- Implement aggressive retry without backoff
-- Make unnecessary API calls
+**禁止**:
+- レート制限を無視しない
+- バックオフなしの積極的なリトライを実装しない
+- 不必要な API 呼び出しを行わない
 
-Example:
+例：
 ```go
-// GOOD: Configure rate limiting
+// 良い例: レート制限を設定
 transport := transport.NewTransport(
-    transport.WithRateLimit(10, 5),  // 10 req/sec, burst 5
+    transport.WithRateLimit(10, 5),  // 10リクエスト/秒、バースト5
     transport.WithRetry(3, time.Second),
 )
 ```
 
-## Known Security Considerations
+## 既知のセキュリティ考慮事項
 
-### OAuth2 Redirect URI
+### OAuth2 リダイレクト URI
 
-- Always validate the `state` parameter to prevent CSRF attacks
-- Use HTTPS for redirect URIs in production
-- Never expose authorization codes or tokens in URLs
+- CSRF 攻撃を防ぐために `state` パラメータを常に検証
+- 本番環境ではリダイレクト URI に HTTPS を使用
+- 認可コードやトークンを URL に公開しない
 
-### Token Storage
+### トークン保存
 
-- Tokens are stored with 0600 permissions (owner read/write only)
-- Token files should be added to `.gitignore` (already included)
-- Consider using OS keychain/credential managers for production
+- トークンは 0600 権限（所有者のみ読み書き可）で保存
+- トークンファイルは `.gitignore` に追加済み
+- 本番環境では OS キーチェーン/認証情報マネージャの使用を検討
 
-### Concurrent Access
+### 並行アクセス
 
-- `CachedTokenSource` is safe for concurrent use
-- HTTP clients are safe for concurrent requests
-- Be careful with shared state in custom middleware
+- `CachedTokenSource` は並行使用に対して安全
+- HTTP クライアントは並行リクエストに対して安全
+- カスタムミドルウェアの共有状態に注意
 
-## Security Updates
+## セキュリティアップデート
 
-Subscribe to security updates:
+セキュリティアップデートを購読：
 
-1. **Watch this repository** on GitHub
-2. **Enable security alerts** in your repository settings if using freee-api-go as a dependency
-3. **Follow releases** to stay informed about security patches
+1. GitHub でこのリポジトリを **Watch**
+2. freee-api-go を依存関係として使用している場合、リポジトリ設定で **セキュリティアラートを有効化**
+3. セキュリティパッチについて情報を得るために **リリースをフォロー**
 
-## Security Contacts
+## セキュリティ連絡先
 
-- **Security Issues**: Use GitHub Security Advisories (preferred)
-- **General Security Questions**: Open a discussion in GitHub Discussions with the "security" tag
+- **セキュリティ問題**: GitHub Security Advisories を使用（推奨）
+- **一般的なセキュリティの質問**: GitHub Discussions で「security」タグを付けてディスカッションを開始
 
-## Acknowledgments
+## 謝辞
 
-We appreciate the security research community's efforts to responsibly disclose vulnerabilities. Contributors who report valid security issues will be acknowledged in the security advisory (with their permission).
+脆弱性を責任ある方法で開示してくださるセキュリティ研究コミュニティの努力に感謝します。有効なセキュリティ問題を報告してくださった貢献者は、セキュリティアドバイザリで謝辞を記載します（許可がある場合）。
 
-## Additional Resources
+## 追加リソース
 
-- [freee API Security Documentation](https://developer.freee.co.jp/)
+- [freee API セキュリティドキュメント](https://developer.freee.co.jp/)
 - [OAuth 2.0 Security Best Current Practice](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics)
-- [Go Security Policy](https://go.dev/security)
+- [Go セキュリティポリシー](https://go.dev/security)
 - [OWASP API Security Project](https://owasp.org/www-project-api-security/)
 
-## License
+## ライセンス
 
-This security policy is part of the freee-api-go project and is licensed under the MIT License.
+このセキュリティポリシーは freee-api-go プロジェクトの一部であり、MIT ライセンスの下でライセンスされています。

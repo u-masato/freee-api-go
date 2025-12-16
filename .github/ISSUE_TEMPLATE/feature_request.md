@@ -1,25 +1,25 @@
 ---
-name: Feature request
-about: Suggest an idea for this project
+name: 機能要望
+about: このプロジェクトへのアイデアを提案
 title: '[FEATURE] '
 labels: enhancement
 assignees: ''
 ---
 
-## Is your feature request related to a problem? Please describe.
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+## 機能要望は問題に関連していますか？説明してください。
+問題の内容を明確かつ簡潔に説明してください。例：「〜するとき、いつも困っています...」
 
-## Describe the solution you'd like
-A clear and concise description of what you want to happen.
+## 希望する解決策を説明してください
+実現してほしいことを明確かつ簡潔に説明してください。
 
-## Describe alternatives you've considered
-A clear and concise description of any alternative solutions or features you've considered.
+## 検討した代替案を説明してください
+検討した代替ソリューションや機能があれば、明確かつ簡潔に説明してください。
 
-## Use case
-Please describe the use case for this feature. How would it be used?
+## ユースケース
+この機能のユースケースを説明してください。どのように使用されますか？
 
 ```go
-// Example of how you'd like to use this feature
+// この機能の使用例
 package main
 
 import (
@@ -28,33 +28,33 @@ import (
 )
 
 func main() {
-    // Your desired usage here
+    // 希望する使用方法をここに記述
 }
 ```
 
-## API Design (if applicable)
-If this feature involves new APIs, please sketch out the proposed function signatures:
+## API 設計（該当する場合）
+この機能に新しい API が含まれる場合、提案する関数シグネチャの概要を記述してください：
 
 ```go
-// ProposedFunction does something useful.
+// ProposedFunction は有用な処理を行います。
 func ProposedFunction(ctx context.Context, param string) (*Result, error) {
     // ...
 }
 ```
 
-## Benefits
-- Benefit 1
-- Benefit 2
-- Benefit 3
+## メリット
+- メリット 1
+- メリット 2
+- メリット 3
 
-## Potential drawbacks or challenges
-- Challenge 1
-- Challenge 2
+## 潜在的な欠点や課題
+- 課題 1
+- 課題 2
 
-## Additional context
-Add any other context, screenshots, or examples about the feature request here.
+## 追加情報
+機能要望に関するその他の情報、スクリーンショット、例があればここに追加してください。
 
-## Willingness to contribute
-- [ ] I am willing to submit a PR to implement this feature
-- [ ] I can help with testing
-- [ ] I can help with documentation
+## 貢献への意欲
+- [ ] この機能を実装する PR を提出する意欲があります
+- [ ] テストを手伝うことができます
+- [ ] ドキュメント作成を手伝うことができます

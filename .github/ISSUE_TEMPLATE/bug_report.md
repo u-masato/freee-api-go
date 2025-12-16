@@ -1,27 +1,27 @@
 ---
-name: Bug report
-about: Create a report to help us improve
+name: バグ報告
+about: 改善のためのバグ報告を作成
 title: '[BUG] '
 labels: bug
 assignees: ''
 ---
 
-## Describe the bug
-A clear and concise description of what the bug is.
+## バグの説明
+バグの内容を明確かつ簡潔に説明してください。
 
-## To Reproduce
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Call function '...'
-3. With parameters '...'
-4. See error
+## 再現手順
+以下の手順で再現できます：
+1. '...' に移動
+2. '...' 関数を呼び出す
+3. '...' のパラメータで実行
+4. エラーを確認
 
-## Expected behavior
-A clear and concise description of what you expected to happen.
+## 期待される動作
+期待される動作を明確かつ簡潔に説明してください。
 
-## Code sample
+## コードサンプル
 ```go
-// Please provide a minimal code sample that reproduces the issue
+// 問題を再現する最小限のコードサンプルを提供してください
 package main
 
 import (
@@ -30,23 +30,23 @@ import (
 )
 
 func main() {
-    // Your code here
+    // ここにコードを記述
 }
 ```
 
-## Error message
+## エラーメッセージ
 ```
-Please paste the full error message or stack trace here
+完全なエラーメッセージまたはスタックトレースをここに貼り付けてください
 ```
 
-## Environment
-- Go version: [e.g. 1.21.5]
-- freee-api-go version: [e.g. v0.1.0]
-- OS: [e.g. macOS 14.0, Ubuntu 22.04]
-- Architecture: [e.g. amd64, arm64]
+## 環境
+- Go バージョン: [例: 1.21.5]
+- freee-api-go バージョン: [例: v0.1.0]
+- OS: [例: macOS 14.0, Ubuntu 22.04]
+- アーキテクチャ: [例: amd64, arm64]
 
-## Additional context
-Add any other context about the problem here.
+## 追加情報
+問題に関するその他の情報があればここに追加してください。
 
-## Possible solution
-If you have any ideas on how to fix the issue, please share them here.
+## 解決策の提案
+問題の修正方法についてアイデアがあれば、ここに共有してください。

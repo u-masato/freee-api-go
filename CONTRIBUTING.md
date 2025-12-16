@@ -1,181 +1,181 @@
-# Contributing to freee-api-go
+# freee-api-go への貢献
 
-Thank you for your interest in contributing to freee-api-go! This document provides guidelines and instructions for contributing to this project.
+freee-api-go への貢献に興味をお持ちいただきありがとうございます！このドキュメントでは、本プロジェクトへの貢献に関するガイドラインと手順を説明します。
 
-## Table of Contents
+## 目次
 
-- [Development Environment Setup](#development-environment-setup)
-- [Pull Request Process](#pull-request-process)
-- [Coding Conventions](#coding-conventions)
-- [Testing Requirements](#testing-requirements)
-- [Documentation Requirements](#documentation-requirements)
+- [開発環境のセットアップ](#開発環境のセットアップ)
+- [プルリクエストの作成手順](#プルリクエストの作成手順)
+- [コーディング規約](#コーディング規約)
+- [テスト要件](#テスト要件)
+- [ドキュメント要件](#ドキュメント要件)
 
-## Development Environment Setup
+## 開発環境のセットアップ
 
-### Prerequisites
+### 前提条件
 
-- Go 1.21 or later
+- Go 1.21 以降
 - Git
-- golangci-lint (for linting)
-- Make (optional, for using Makefile commands)
+- golangci-lint（リンター用）
+- Make（オプション、Makefileコマンド使用時）
 
-### Setup Steps
+### セットアップ手順
 
-1. **Fork and Clone**
+1. **フォークとクローン**
    ```bash
    git clone https://github.com/YOUR_USERNAME/freee-api-go.git
    cd freee-api-go
    ```
 
-2. **Install Dependencies**
+2. **依存関係のインストール**
    ```bash
    go mod download
    ```
 
-3. **Install Development Tools**
+3. **開発ツールのインストール**
    ```bash
-   # Install golangci-lint
+   # golangci-lint のインストール
    go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 
-   # Install oapi-codegen (for code generation)
+   # oapi-codegen のインストール（コード生成用）
    go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@latest
    ```
 
-4. **Verify Setup**
+4. **セットアップの確認**
    ```bash
-   # Build all packages
+   # 全パッケージをビルド
    make build
-   # or
+   # または
    go build ./...
 
-   # Run tests
+   # テストを実行
    make test
-   # or
+   # または
    go test ./...
 
-   # Run linter
+   # リンターを実行
    make lint
-   # or
+   # または
    golangci-lint run
    ```
 
-### Available Make Commands
+### 利用可能な Make コマンド
 
 ```bash
-make help          # Show available commands
-make build         # Build all packages
-make test          # Run all tests
-make coverage      # Generate test coverage report
-make lint          # Run linter
-make generate      # Generate code from OpenAPI spec
-make update-openapi # Update OpenAPI specification
-make clean         # Clean build artifacts
+make help          # 利用可能なコマンドを表示
+make build         # 全パッケージをビルド
+make test          # 全テストを実行
+make coverage      # テストカバレッジレポートを生成
+make lint          # リンターを実行
+make generate      # OpenAPI 仕様からコードを生成
+make update-openapi # OpenAPI 仕様を更新
+make clean         # ビルド成果物を削除
 ```
 
-## Pull Request Process
+## プルリクエストの作成手順
 
-### Before You Start
+### 作業開始前に
 
-1. **Check for Existing Issues**: Search existing issues to see if your idea or bug has already been reported
-2. **Create an Issue**: For new features or significant changes, create an issue first to discuss the approach
-3. **Claim an Issue**: Comment on the issue to let others know you're working on it
+1. **既存の Issue を確認**: あなたのアイデアやバグが既に報告されていないか、既存の Issue を検索してください
+2. **Issue を作成**: 新機能や大きな変更の場合は、まず Issue を作成してアプローチについて議論してください
+3. **Issue を担当**: 作業中であることを他の人に知らせるため、Issue にコメントしてください
 
-### Creating a Pull Request
+### プルリクエストの作成
 
-1. **Create a Branch**
+1. **ブランチを作成**
    ```bash
    git checkout -b feature/your-feature-name
-   # or
+   # または
    git checkout -b fix/your-bug-fix
    ```
 
-2. **Make Your Changes**
-   - Write code following our [coding conventions](#coding-conventions)
-   - Add tests for new functionality
-   - Update documentation as needed
+2. **変更を実装**
+   - [コーディング規約](#コーディング規約)に従ってコードを書く
+   - 新機能にはテストを追加
+   - 必要に応じてドキュメントを更新
 
-3. **Run Tests and Linter**
+3. **テストとリンターを実行**
    ```bash
-   # Run tests
+   # テストを実行
    make test
 
-   # Run linter
+   # リンターを実行
    make lint
 
-   # Check test coverage
+   # テストカバレッジを確認
    make coverage
    ```
 
-4. **Commit Your Changes**
+4. **変更をコミット**
    ```bash
    git add .
-   git commit -m "Brief description of changes
+   git commit -m "変更の簡潔な説明
 
-   Detailed description:
-   - Change 1
-   - Change 2
+   詳細な説明:
+   - 変更点 1
+   - 変更点 2
 
    Fixes #123"
    ```
 
-5. **Push and Create PR**
+5. **プッシュして PR を作成**
    ```bash
    git push origin feature/your-feature-name
    ```
-   Then create a pull request on GitHub.
+   その後、GitHub でプルリクエストを作成してください。
 
-### PR Requirements
+### PR の要件
 
-- All tests must pass
-- Code coverage should not decrease (target: 80%+)
-- Linter must pass with no errors
-- Documentation must be updated for user-facing changes
-- PR description should clearly explain the changes and their purpose
+- 全てのテストがパスすること
+- コードカバレッジが低下しないこと（目標: 80%以上）
+- リンターがエラーなしでパスすること
+- ユーザー向けの変更にはドキュメントの更新が必要
+- PR の説明には変更内容とその目的を明確に記載
 
-## Coding Conventions
+## コーディング規約
 
-### Go Style Guide
+### Go スタイルガイド
 
-We follow the official [Go Code Review Comments](https://go.dev/wiki/CodeReviewComments) and [Effective Go](https://go.dev/doc/effective_go) guidelines.
+公式の [Go Code Review Comments](https://go.dev/wiki/CodeReviewComments) と [Effective Go](https://go.dev/doc/effective_go) ガイドラインに従います。
 
-**Key Points**:
+**重要なポイント**:
 
-- Use `gofmt` and `goimports` for formatting
-- Follow Go naming conventions:
-  - Use `MixedCaps` or `mixedCaps` (not underscores)
-  - Acronyms should be all uppercase (e.g., `APIClient`, not `ApiClient`)
-- Keep functions small and focused
-- Use meaningful variable names (avoid single-letter names except in short scopes)
-- Add comments for exported functions and types
+- フォーマットには `gofmt` と `goimports` を使用
+- Go の命名規則に従う:
+  - `MixedCaps` または `mixedCaps` を使用（アンダースコアは使わない）
+  - 頭字語は全て大文字にする（例: `APIClient`、`ApiClient` ではない）
+- 関数は小さく、焦点を絞ったものにする
+- 意味のある変数名を使用（短いスコープ以外では1文字の変数名は避ける）
+- エクスポートされた関数と型にはコメントを追加
 
-### Package Structure
+### パッケージ構成
 
 ```
 freee-api-go/
-├── auth/           # OAuth2 authentication (public)
-├── transport/      # HTTP transport middleware (public)
-├── client/         # Main client configuration (public)
-├── accounting/     # High-level Facade (public)
-├── internal/       # Internal packages (may change)
-│   ├── gen/        # OpenAPI-generated code
-│   └── testutil/   # Test utilities
-├── examples/       # Sample code
-└── tools/          # Code generation scripts
+├── auth/           # OAuth2 認証（公開）
+├── transport/      # HTTP トランスポートミドルウェア（公開）
+├── client/         # メインクライアント設定（公開）
+├── accounting/     # 高レベル Facade（公開）
+├── internal/       # 内部パッケージ（変更の可能性あり）
+│   ├── gen/        # OpenAPI 生成コード
+│   └── testutil/   # テストユーティリティ
+├── examples/       # サンプルコード
+└── tools/          # コード生成スクリプト
 ```
 
-**Guidelines**:
-- Public packages must maintain API stability (semantic versioning)
-- Use `internal/` for implementation details that may change
-- Generated code stays in `internal/gen/` and is excluded from linting
+**ガイドライン**:
+- 公開パッケージは API の安定性を維持する必要がある（セマンティックバージョニング）
+- 変更の可能性がある実装の詳細には `internal/` を使用
+- 生成されたコードは `internal/gen/` に配置し、リンターから除外
 
-### Error Handling
+### エラーハンドリング
 
-Use custom error types with context:
+コンテキストを含むカスタムエラー型を使用:
 
 ```go
 type MyError struct {
-    Op  string  // Operation name
-    Err error   // Underlying error
+    Op  string  // 操作名
+    Err error   // 元のエラー
 }
 
 func (e *MyError) Error() string {
@@ -187,38 +187,38 @@ func (e *MyError) Unwrap() error {
 }
 ```
 
-Always provide context in errors:
+エラーには常にコンテキストを提供:
 ```go
 if err != nil {
-    return fmt.Errorf("failed to process request: %w", err)
+    return fmt.Errorf("リクエストの処理に失敗しました: %w", err)
 }
 ```
 
-### Context Usage
+### Context の使用
 
-Always accept `context.Context` as the first parameter for:
-- Network operations
-- Database operations
-- Long-running operations
-- API calls
+以下の場合は常に `context.Context` を最初のパラメータとして受け取る:
+- ネットワーク操作
+- データベース操作
+- 長時間実行される操作
+- API 呼び出し
 
 ```go
 func DoSomething(ctx context.Context, param string) error {
-    // Implementation
+    // 実装
 }
 ```
 
-## Testing Requirements
+## テスト要件
 
-### Test Coverage
+### テストカバレッジ
 
-- Target: 80%+ code coverage
-- All public functions must have tests
-- Test both success and error cases
+- 目標: 80%以上のコードカバレッジ
+- 全ての公開関数にテストが必要
+- 成功ケースとエラーケースの両方をテスト
 
-### Testing Patterns
+### テストパターン
 
-**Use table-driven tests with subtests**:
+**テーブル駆動テストとサブテストを使用**:
 
 ```go
 func TestFeature(t *testing.T) {
@@ -229,12 +229,12 @@ func TestFeature(t *testing.T) {
         wantErr bool
     }{
         {
-            name:  "valid input",
+            name:  "有効な入力",
             input: "test",
             want:  "result",
         },
         {
-            name:    "invalid input",
+            name:    "無効な入力",
             input:   "",
             wantErr: true,
         },
@@ -255,110 +255,110 @@ func TestFeature(t *testing.T) {
 }
 ```
 
-**Use httptest.Server for HTTP mocking**:
+**HTTP モッキングには httptest.Server を使用**:
 
 ```go
 func TestHTTPClient(t *testing.T) {
     server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        // Validate request
-        // Return mock response
+        // リクエストを検証
+        // モックレスポンスを返す
         w.WriteHeader(http.StatusOK)
         w.Write([]byte(`{"status":"ok"}`))
     }))
     defer server.Close()
 
-    // Test implementation
+    // 実装をテスト
 }
 ```
 
-### Running Tests
+### テストの実行
 
 ```bash
-# Run all tests
+# 全テストを実行
 go test ./...
 
-# Run with verbose output
+# 詳細出力で実行
 go test -v ./...
 
-# Run with coverage
+# カバレッジ付きで実行
 go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
 
-# Run specific package
+# 特定のパッケージを実行
 go test -v ./auth/...
 
-# Run single test
+# 単一のテストを実行
 go test -v -run TestName ./package/
 ```
 
-## Documentation Requirements
+## ドキュメント要件
 
-### Code Documentation
+### コードドキュメント
 
-**Exported functions and types must have comments**:
+**エクスポートされた関数と型にはコメントが必要**:
 
 ```go
-// NewClient creates a new freee API client with the given options.
-// It returns an error if the configuration is invalid.
+// NewClient は指定されたオプションで新しい freee API クライアントを作成します。
+// 設定が無効な場合はエラーを返します。
 func NewClient(opts ...Option) (*Client, error) {
-    // Implementation
+    // 実装
 }
 ```
 
-**Package documentation** (in `doc.go` or package file):
+**パッケージドキュメント**（`doc.go` またはパッケージファイル内）:
 
 ```go
-// Package auth provides OAuth2 authentication for the freee API.
+// Package auth は freee API 用の OAuth2 認証を提供します。
 //
-// This package implements the OAuth2 authorization code flow with PKCE
-// and provides token management with automatic refresh.
+// このパッケージは PKCE を使用した OAuth2 認可コードフローを実装し、
+// 自動リフレッシュ機能を持つトークン管理を提供します。
 //
-// Example usage:
+// 使用例:
 //
 //     config := auth.NewConfig(clientID, clientSecret, redirectURL, scopes)
 //     authURL := config.AuthCodeURL(state)
-//     // ... redirect user to authURL ...
+//     // ... ユーザーを authURL にリダイレクト ...
 //     token, err := config.Exchange(ctx, code)
 //
 package auth
 ```
 
-### User-Facing Documentation
+### ユーザー向けドキュメント
 
-For user-facing changes, update:
+ユーザー向けの変更には、以下を更新:
 
-- **README.md**: For major features or usage changes
-- **Examples**: Add or update code examples in `examples/`
-- **CLAUDE.md**: Update project instructions if architecture changes
-- **TODO.md**: Mark completed tasks and update progress
+- **README.md**: 主要な機能や使用方法の変更
+- **Examples**: `examples/` にコード例を追加または更新
+- **CLAUDE.md**: アーキテクチャの変更時にプロジェクト手順を更新
+- **TODO.md**: 完了したタスクをマークし、進捗を更新
 
-### Example Code
+### サンプルコード
 
-All examples must:
-- Be complete and runnable
-- Include error handling
-- Have comments explaining key steps
-- Include a README.md with setup instructions
+全てのサンプルは以下の要件を満たす必要があります:
+- 完全で実行可能であること
+- エラーハンドリングを含むこと
+- 重要なステップを説明するコメントがあること
+- セットアップ手順を記載した README.md を含むこと
 
-## Issue and PR Templates
+## Issue と PR テンプレート
 
-When creating issues or pull requests, please use the provided templates:
+Issue やプルリクエストを作成する際は、提供されているテンプレートを使用してください:
 
-- Bug reports: `.github/ISSUE_TEMPLATE/bug_report.md`
-- Feature requests: `.github/ISSUE_TEMPLATE/feature_request.md`
-- Pull requests: `.github/PULL_REQUEST_TEMPLATE.md`
+- バグ報告: `.github/ISSUE_TEMPLATE/bug_report.md`
+- 機能要望: `.github/ISSUE_TEMPLATE/feature_request.md`
+- プルリクエスト: `.github/PULL_REQUEST_TEMPLATE.md`
 
-## Questions?
+## 質問がありますか？
 
-If you have questions:
+質問がある場合:
 
-1. Check the [README.md](README.md), [PLAN.md](PLAN.md), and [TODO.md](TODO.md)
-2. Search existing issues
-3. Create a new issue with the question label
+1. [README.md](README.md)、[PLAN.md](PLAN.md)、[TODO.md](TODO.md) を確認
+2. 既存の Issue を検索
+3. question ラベルを付けて新しい Issue を作成
 
-## Code of Conduct
+## 行動規範
 
-Please be respectful and constructive in all interactions. We're all here to build something useful together.
+全てのやり取りにおいて、敬意を持ち建設的であってください。私たちは皆、一緒に有用なものを作るためにここにいます。
 
-## License
+## ライセンス
 
-By contributing to freee-api-go, you agree that your contributions will be licensed under the MIT License.
+freee-api-go への貢献により、あなたの貢献が MIT ライセンスの下でライセンスされることに同意したものとみなされます。

@@ -1,60 +1,60 @@
-## Summary
-Brief description of what this PR does.
+## 概要
+この PR の内容を簡潔に説明してください。
 
-## Related Issues
-Closes #[issue number]
-Related to #[issue number]
+## 関連 Issue
+Closes #[Issue番号]
+Related to #[Issue番号]
 
-## Changes
-- Change 1
-- Change 2
-- Change 3
+## 変更内容
+- 変更点 1
+- 変更点 2
+- 変更点 3
 
-## Type of Change
-- [ ] Bug fix (non-breaking change which fixes an issue)
-- [ ] New feature (non-breaking change which adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
-- [ ] Documentation update
-- [ ] Refactoring (no functional changes)
-- [ ] Performance improvement
-- [ ] Test improvement
+## 変更の種類
+- [ ] バグ修正（既存の機能に影響しない非破壊的な変更）
+- [ ] 新機能（既存の機能に影響しない非破壊的な追加）
+- [ ] 破壊的変更（既存の機能が期待通りに動作しなくなる修正または機能）
+- [ ] ドキュメント更新
+- [ ] リファクタリング（機能変更なし）
+- [ ] パフォーマンス改善
+- [ ] テスト改善
 
-## Testing
-Describe the tests you ran to verify your changes:
+## テスト
+変更を検証するために実行したテストを説明してください：
 
-- [ ] All existing tests pass (`make test`)
-- [ ] Added new tests for new functionality
-- [ ] Tested manually with [describe scenario]
-- [ ] Verified test coverage has not decreased
+- [ ] 既存のすべてのテストがパス（`make test`）
+- [ ] 新機能に対して新しいテストを追加
+- [ ] [シナリオを説明] で手動テスト済み
+- [ ] テストカバレッジが低下していないことを確認
 
 ```bash
-# Test commands run
+# 実行したテストコマンド
 make test
 make lint
 ```
 
-## Documentation
-- [ ] Updated README.md (if user-facing changes)
-- [ ] Updated CLAUDE.md (if architecture changes)
-- [ ] Updated TODO.md (marked tasks as complete)
-- [ ] Added/updated code comments
-- [ ] Added/updated examples
+## ドキュメント
+- [ ] README.md を更新（ユーザー向けの変更の場合）
+- [ ] CLAUDE.md を更新（アーキテクチャの変更の場合）
+- [ ] TODO.md を更新（タスクを完了としてマーク）
+- [ ] コードコメントを追加/更新
+- [ ] サンプルを追加/更新
 
-## Checklist
-- [ ] My code follows the project's coding conventions (see CONTRIBUTING.md)
-- [ ] I have performed a self-review of my own code
-- [ ] I have commented my code, particularly in hard-to-understand areas
-- [ ] I have made corresponding changes to the documentation
-- [ ] My changes generate no new warnings or errors
-- [ ] I have added tests that prove my fix is effective or that my feature works
-- [ ] New and existing unit tests pass locally with my changes
-- [ ] Any dependent changes have been merged and published
+## チェックリスト
+- [ ] プロジェクトのコーディング規約に従っている（CONTRIBUTING.md 参照）
+- [ ] 自分のコードをセルフレビュー済み
+- [ ] 理解しにくい部分にはコメントを追加
+- [ ] 対応するドキュメントの変更を行った
+- [ ] 変更により新しい警告やエラーが発生しない
+- [ ] 修正が有効であること、または機能が動作することを証明するテストを追加
+- [ ] 新規および既存のユニットテストがローカルでパス
+- [ ] 依存する変更がある場合はマージおよび公開済み
 
-## Additional Notes
-Add any additional notes, screenshots, or context here.
+## 追加のメモ
+追加のメモ、スクリーンショット、またはコンテキストをここに追加してください。
 
-## Breaking Changes
-If this is a breaking change, please describe:
-- What breaks
-- Migration path for users
-- Reason for the breaking change
+## 破壊的変更
+これが破壊的変更の場合、以下を説明してください：
+- 何が壊れるか
+- ユーザーの移行パス
+- 破壊的変更の理由
