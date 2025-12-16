@@ -91,7 +91,7 @@ func main() {
 
 	// Step 3: Create OAuth2 token source with auto-refresh
 	fmt.Println("3. Setting up OAuth2 with auto-refresh...")
-	tokenSource := createTokenSource(token, customTransport)
+	tokenSource := createTokenSource(token)
 	fmt.Println("   Token source created with auto-refresh capability")
 	fmt.Println()
 
@@ -172,7 +172,7 @@ func createCustomTransport(logger *slog.Logger) *transport.Transport {
 }
 
 // createTokenSource creates an OAuth2 token source with auto-refresh capability.
-func createTokenSource(token *oauth2.Token, _ *transport.Transport) oauth2.TokenSource {
+func createTokenSource(token *oauth2.Token) oauth2.TokenSource {
 	// Get OAuth2 credentials from environment
 	clientID := os.Getenv("FREEE_CLIENT_ID")
 	clientSecret := os.Getenv("FREEE_CLIENT_SECRET")
@@ -243,7 +243,7 @@ func demonstratePagination(ctx context.Context, client *accounting.Client, compa
 		count++
 		totalAmount += deal.Amount
 
-		// Print first 5 and last one
+		// Print first 5 items
 		if count <= 5 {
 			fmt.Printf("      [%d] Deal ID: %d, Amount: ¥%d, Date: %s\n",
 				count, deal.Id, deal.Amount, deal.IssueDate)

@@ -33,7 +33,7 @@ go run main.go
 本番環境向けのHTTPトランスポート設定方法を学びます。
 
 ```go
-transport := transport.NewTransport(
+httpTransport := transport.NewTransport(
     // レート制限: 3リクエスト/秒、バースト5
     transport.WithRateLimit(3, 5),
 
@@ -148,7 +148,7 @@ ctx, cancel := context.WithCancel(context.Background())
 
 ```go
 // 本番環境用トランスポート
-prodTransport := transport.NewTransport(
+httpTransport := transport.NewTransport(
     transport.WithRateLimit(3, 5),     // freee APIのレート制限に対応
     transport.WithRetry(3, time.Second), // 一時的なエラーから回復
     transport.WithLogging(logger),      // 監視・デバッグ用
@@ -156,9 +156,9 @@ prodTransport := transport.NewTransport(
 )
 
 // OAuth2と組み合わせ
-httpClient := &oauth2.Transport{
+oauthTransport := &oauth2.Transport{
     Source: tokenSource,
-    Base:   prodTransport,
+    Base:   httpTransport,
 }
 ```
 

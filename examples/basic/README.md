@@ -63,7 +63,7 @@ opts := &accounting.ListDealsOptions{
 }
 
 // 取引一覧を取得
-result, err := client.Deals().List(ctx, companyID, opts)
+result, err := accountingClient.Deals().List(ctx, companyID, opts)
 if err != nil {
     return fmt.Errorf("failed to list deals: %w", err)
 }
@@ -84,14 +84,14 @@ opts := &accounting.ListDealsOptions{
     Limit: &limit,
 }
 
-result, err := client.Deals().List(ctx, companyID, opts)
+result, err := accountingClient.Deals().List(ctx, companyID, opts)
 ```
 
 ### 4. 単一データの取得（Get）
 
 ```go
 // 特定の取引を取得
-resp, err := client.Deals().Get(ctx, companyID, dealID, nil)
+resp, err := accountingClient.Deals().Get(ctx, companyID, dealID, nil)
 if err != nil {
     return fmt.Errorf("failed to get deal: %w", err)
 }
@@ -103,7 +103,7 @@ fmt.Printf("Deal ID: %d\n", deal.Id)
 ### 5. エラーハンドリング
 
 ```go
-result, err := client.Deals().List(ctx, companyID, opts)
+result, err := accountingClient.Deals().List(ctx, companyID, opts)
 if err != nil {
     // エラーをログに出力
     log.Printf("Error listing deals: %v", err)
@@ -119,7 +119,7 @@ ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 defer cancel()  // 必ずキャンセルを呼び出す
 
 // コンテキストを使用してAPIを呼び出し
-result, err := client.Deals().List(ctx, companyID, opts)
+result, err := accountingClient.Deals().List(ctx, companyID, opts)
 ```
 
 ## 出力例
