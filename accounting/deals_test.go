@@ -6,8 +6,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/muno/freee-api-go/client"
-	"github.com/muno/freee-api-go/internal/gen"
+	"github.com/u-masato/freee-api-go/client"
+	"github.com/u-masato/freee-api-go/internal/gen"
 )
 
 func TestDealsService_List(t *testing.T) {

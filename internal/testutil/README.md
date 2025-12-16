@@ -12,7 +12,7 @@
 ## 使用例
 
 ```go
-import "github.com/muno/freee-api-go/internal/testutil"
+import "github.com/u-masato/freee-api-go/internal/testutil"
 
 func TestSomething(t *testing.T) {
     server := testutil.NewMockServer(t)

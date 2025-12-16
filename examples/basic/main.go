@@ -30,8 +30,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/muno/freee-api-go/accounting"
-	"github.com/muno/freee-api-go/client"
+	"github.com/u-masato/freee-api-go/accounting"
+	"github.com/u-masato/freee-api-go/client"
 	"golang.org/x/oauth2"
 )
 
