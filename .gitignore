@@ -51,3 +51,4 @@ temp/
 # OpenAPI generated files are version controlled
 # but exclude temporary generation files
 *.gen.go.tmp
+iterator
