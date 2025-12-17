@@ -14,7 +14,7 @@ freee-api-go への貢献に興味をお持ちいただきありがとうござ�
 
 ### 前提条件
 
-- Go 1.21 以降
+- Go 1.24 以降
 - Git
 - golangci-lint（リンター用）
 - Make（オプション、Makefileコマンド使用時）

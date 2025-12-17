@@ -156,7 +156,7 @@ freee APIのOpenAPI仕様は以下から取得:
 
 ### 7.1 コード品質
 
-- Go Modules対応（go 1.21+）
+- Go Modules対応（go 1.24+）
 - GoDocによるAPIドキュメント生成
 - golangci-lint による静的解析
 - コードカバレッジ 80%以上を目標

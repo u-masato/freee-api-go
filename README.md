@@ -5,7 +5,7 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/u-masato/freee-api-go.svg)](https://pkg.go.dev/github.com/u-masato/freee-api-go)
 [![Go Report Card](https://goreportcard.com/badge/github.com/u-masato/freee-api-go)](https://goreportcard.com/report/github.com/u-masato/freee-api-go)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Go Version](https://img.shields.io/badge/Go-1.21+-00ADD8?logo=go)](https://golang.org/)
+[![Go Version](https://img.shields.io/badge/Go-1.24+-00ADD8?logo=go)](https://golang.org/)
 
 freee（フリー株式会社）が提供する会計API用のGo言語クライアントライブラリ（SDK）です。
 
@@ -43,7 +43,7 @@ freee（フリー株式会社）が提供する会計API用のGo言語クライ�
 
 ### 必要要件
 
-- **Go 1.21以上**
+- **Go 1.24以上**
 - **freee開発者アカウント**（[freee開発者ポータル](https://developer.freee.co.jp/)で作成）
 
 ### インストール方法
