@@ -263,7 +263,7 @@ mkdir -p {client,auth,accounting,transport,internal/{gen,testutil},examples/{oau
 - [x] `LoggingRoundTripper` 実装
   - リクエスト/レスポンスログ
   - シークレットマスキング（Authorization, Cookie, API-Key）
-  - slog（Go 1.21+）利用
+  - slog（Go 1.24+）利用
   - 構造化ログ出力
 - [x] ロギングテスト作成（7テスト成功）
 
