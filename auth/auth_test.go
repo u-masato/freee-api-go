@@ -14,7 +14,7 @@ import (
 	"golang.org/x/oauth2"
 )
 
-// Test token validation
+// Test token validation.
 func TestIsTokenValid(t *testing.T) {
 	tests := []struct {
 		name  string
@@ -280,7 +280,7 @@ func TestGetTokenInfo(t *testing.T) {
 	}
 }
 
-// Test CachedTokenSource
+// Test CachedTokenSource.
 func TestCachedTokenSource(t *testing.T) {
 	callCount := 0
 	validToken := &oauth2.Token{
@@ -443,7 +443,7 @@ func TestReuseTokenSourceWithCallback(t *testing.T) {
 	}
 }
 
-// Test error types
+// Test error types.
 func TestAuthError(t *testing.T) {
 	err := &AuthError{
 		Op:          "Exchange",
@@ -540,7 +540,7 @@ func TestIsInvalidGrantError(t *testing.T) {
 	}
 }
 
-// Mock token source for testing
+// Mock token source for testing.
 type mockTokenSource struct {
 	tokenFunc func() (*oauth2.Token, error)
 }
@@ -549,7 +549,7 @@ func (m *mockTokenSource) Token() (*oauth2.Token, error) {
 	return m.tokenFunc()
 }
 
-// Test full OAuth2 flow with mock server
+// Test full OAuth2 flow with mock server.
 func TestFullOAuth2Flow(t *testing.T) {
 	// Create a mock OAuth2 server
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

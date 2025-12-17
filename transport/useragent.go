@@ -53,7 +53,7 @@ func (rt *UserAgentRoundTripper) SetBase(base http.RoundTripper) {
 }
 
 // DefaultUserAgent returns the default user agent string for this library.
-// Format: "freee-api-go/VERSION (+github.com/u-masato/freee-api-go)"
+// Format: "freee-api-go/VERSION (+github.com/u-masato/freee-api-go)".
 func DefaultUserAgent(version string) string {
 	if version == "" {
 		version = "dev"

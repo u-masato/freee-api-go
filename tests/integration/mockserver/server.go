@@ -102,21 +102,21 @@ type Request struct {
 
 // Deal represents a mock deal.
 type Deal struct {
-	ID         int64          `json:"id"`
-	CompanyID  int64          `json:"company_id"`
-	IssueDate  string         `json:"issue_date"`
-	DueDate    *string        `json:"due_date,omitempty"`
-	Amount     int64          `json:"amount"`
-	DueAmount  int64          `json:"due_amount"`
-	Type       string         `json:"type"`
-	PartnerID  *int64         `json:"partner_id,omitempty"`
-	RefNumber  *string        `json:"ref_number,omitempty"`
-	Status     string         `json:"status"`
-	Details    []DealDetail   `json:"details"`
-	Payments   []DealPayment  `json:"payments"`
-	Receipts   []DealReceipt  `json:"receipts"`
-	CreateTime string         `json:"created_at"`
-	UpdateTime string         `json:"updated_at"`
+	ID         int64         `json:"id"`
+	CompanyID  int64         `json:"company_id"`
+	IssueDate  string        `json:"issue_date"`
+	DueDate    *string       `json:"due_date,omitempty"`
+	Amount     int64         `json:"amount"`
+	DueAmount  int64         `json:"due_amount"`
+	Type       string        `json:"type"`
+	PartnerID  *int64        `json:"partner_id,omitempty"`
+	RefNumber  *string       `json:"ref_number,omitempty"`
+	Status     string        `json:"status"`
+	Details    []DealDetail  `json:"details"`
+	Payments   []DealPayment `json:"payments"`
+	Receipts   []DealReceipt `json:"receipts"`
+	CreateTime string        `json:"created_at"`
+	UpdateTime string        `json:"updated_at"`
 }
 
 // DealDetail represents a deal detail line.
@@ -132,11 +132,11 @@ type DealDetail struct {
 
 // DealPayment represents a deal payment.
 type DealPayment struct {
-	ID            int64  `json:"id"`
-	Date          string `json:"date"`
-	FromWalletID  int64  `json:"from_walletable_id"`
+	ID             int64  `json:"id"`
+	Date           string `json:"date"`
+	FromWalletID   int64  `json:"from_walletable_id"`
 	FromWalletType string `json:"from_walletable_type"`
-	Amount        int64  `json:"amount"`
+	Amount         int64  `json:"amount"`
 }
 
 // DealReceipt represents a deal receipt.
@@ -146,20 +146,20 @@ type DealReceipt struct {
 
 // Journal represents a mock journal entry.
 type Journal struct {
-	ID        int64  `json:"id"`
-	CompanyID int64  `json:"company_id"`
+	ID        int64 `json:"id"`
+	CompanyID int64 `json:"company_id"`
 }
 
 // WalletTxn represents a mock wallet transaction.
 type WalletTxn struct {
-	ID        int64  `json:"id"`
-	CompanyID int64  `json:"company_id"`
+	ID        int64 `json:"id"`
+	CompanyID int64 `json:"company_id"`
 }
 
 // Transfer represents a mock transfer.
 type Transfer struct {
-	ID        int64  `json:"id"`
-	CompanyID int64  `json:"company_id"`
+	ID        int64 `json:"id"`
+	CompanyID int64 `json:"company_id"`
 }
 
 // NewServer creates a new mock freee API server.

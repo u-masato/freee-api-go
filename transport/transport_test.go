@@ -54,9 +54,9 @@ func TestTransportWithOptions(t *testing.T) {
 
 func TestChainRoundTrippers(t *testing.T) {
 	tests := []struct {
-		name  string
-		rts   []http.RoundTripper
-		want  int // number of RoundTrippers
+		name string
+		rts  []http.RoundTripper
+		want int // number of RoundTrippers
 	}{
 		{
 			name: "empty",

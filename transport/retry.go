@@ -95,7 +95,7 @@ func (rt *RetryRoundTripper) SetBase(base http.RoundTripper) {
 }
 
 // calculateBackoff calculates the backoff delay for a given attempt.
-// Uses exponential backoff: initialDelay * 2^attempt
+// Uses exponential backoff: initialDelay * 2^attempt.
 func (rt *RetryRoundTripper) calculateBackoff(attempt int) time.Duration {
 	multiplier := math.Pow(2, float64(attempt))
 	delay := time.Duration(float64(rt.initialDelay) * multiplier)

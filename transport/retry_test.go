@@ -154,8 +154,8 @@ func TestRetryRoundTripperNonRetryableStatus(t *testing.T) {
 
 func TestIsRetryableStatusCode(t *testing.T) {
 	tests := []struct {
-		code       int
-		retryable  bool
+		code      int
+		retryable bool
 	}{
 		{http.StatusOK, false},
 		{http.StatusBadRequest, false},
@@ -215,7 +215,7 @@ func TestSetBaseRetry(t *testing.T) {
 	}
 }
 
-// mockRoundTripper is a test helper that returns errors
+// mockRoundTripper is a test helper that returns errors.
 type mockRoundTripper struct {
 	err error
 }

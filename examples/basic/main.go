@@ -101,7 +101,7 @@ func main() {
 	fmt.Println("\n=== Example completed successfully ===")
 }
 
-// listRecentDeals demonstrates fetching recent deals with pagination
+// listRecentDeals demonstrates fetching recent deals with pagination.
 func listRecentDeals(ctx context.Context, client *accounting.Client, companyID int64) error {
 	// Set up options to fetch the first 5 deals
 	limit := int64(5)
@@ -143,7 +143,7 @@ func listRecentDeals(ctx context.Context, client *accounting.Client, companyID i
 	return nil
 }
 
-// listExpenseDeals demonstrates filtering deals by type
+// listExpenseDeals demonstrates filtering deals by type.
 func listExpenseDeals(ctx context.Context, client *accounting.Client, companyID int64) error {
 	// Set up options to filter expense deals
 	dealType := "expense"
@@ -183,7 +183,7 @@ func listExpenseDeals(ctx context.Context, client *accounting.Client, companyID 
 	return nil
 }
 
-// getSpecificDeal demonstrates fetching a single deal by ID
+// getSpecificDeal demonstrates fetching a single deal by ID.
 func getSpecificDeal(ctx context.Context, client *accounting.Client, companyID int64) error {
 	// First, get a deal ID from the list
 	limit := int64(1)

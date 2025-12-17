@@ -38,11 +38,11 @@ import (
 )
 
 const (
-	// Port for the local callback server
+	// Port for the local callback server.
 	callbackPort = "8080"
-	// Callback path
+	// Callback path.
 	callbackPath = "/callback"
-	// Token file path
+	// Token file path.
 	tokenFile = "token.json"
 )
 
@@ -115,7 +115,7 @@ func main() {
 
 	// Start the callback server
 	server := &http.Server{
-		Addr: ":" + callbackPort,
+		Addr:    ":" + callbackPort,
 		Handler: callbackHandler(state, codeChan, errorChan),
 	}
 

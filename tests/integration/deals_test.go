@@ -35,23 +35,23 @@ func TestDealsService_CRUD(t *testing.T) {
 			IssueDate: "2024-01-15",
 			Type:      gen.DealCreateParamsTypeExpense,
 			Details: []struct {
-				AccountItemCode *string `json:"account_item_code,omitempty"`
-				AccountItemId   *int64  `json:"account_item_id,omitempty"`
-				Amount          int64   `json:"amount"`
-				Description     *string `json:"description,omitempty"`
-				ItemCode        *string `json:"item_code,omitempty"`
-				ItemId          *int64  `json:"item_id,omitempty"`
-				SectionCode     *string `json:"section_code,omitempty"`
-				SectionId       *int64  `json:"section_id,omitempty"`
-				Segment1TagCode *string `json:"segment_1_tag_code,omitempty"`
-				Segment1TagId   *int64  `json:"segment_1_tag_id,omitempty"`
-				Segment2TagCode *string `json:"segment_2_tag_code,omitempty"`
-				Segment2TagId   *int64  `json:"segment_2_tag_id,omitempty"`
-				Segment3TagCode *string `json:"segment_3_tag_code,omitempty"`
-				Segment3TagId   *int64  `json:"segment_3_tag_id,omitempty"`
+				AccountItemCode *string  `json:"account_item_code,omitempty"`
+				AccountItemId   *int64   `json:"account_item_id,omitempty"`
+				Amount          int64    `json:"amount"`
+				Description     *string  `json:"description,omitempty"`
+				ItemCode        *string  `json:"item_code,omitempty"`
+				ItemId          *int64   `json:"item_id,omitempty"`
+				SectionCode     *string  `json:"section_code,omitempty"`
+				SectionId       *int64   `json:"section_id,omitempty"`
+				Segment1TagCode *string  `json:"segment_1_tag_code,omitempty"`
+				Segment1TagId   *int64   `json:"segment_1_tag_id,omitempty"`
+				Segment2TagCode *string  `json:"segment_2_tag_code,omitempty"`
+				Segment2TagId   *int64   `json:"segment_2_tag_id,omitempty"`
+				Segment3TagCode *string  `json:"segment_3_tag_code,omitempty"`
+				Segment3TagId   *int64   `json:"segment_3_tag_id,omitempty"`
 				TagIds          *[]int64 `json:"tag_ids,omitempty"`
-				TaxCode         int64   `json:"tax_code"`
-				Vat             *int64  `json:"vat,omitempty"`
+				TaxCode         int64    `json:"tax_code"`
+				Vat             *int64   `json:"vat,omitempty"`
 			}{
 				{
 					AccountItemId: &accountItemID,
@@ -193,18 +193,18 @@ func TestDealsService_CRUD(t *testing.T) {
 			IssueDate: "2024-01-25",
 			Type:      gen.DealUpdateParamsTypeExpense,
 			Details: []struct {
-				AccountItemId  int64   `json:"account_item_id"`
-				Amount         int64   `json:"amount"`
-				Description    *string `json:"description,omitempty"`
-				Id             *int64  `json:"id,omitempty"`
-				ItemId         *int64  `json:"item_id,omitempty"`
-				SectionId      *int64  `json:"section_id,omitempty"`
-				Segment1TagId  *int64  `json:"segment_1_tag_id,omitempty"`
-				Segment2TagId  *int64  `json:"segment_2_tag_id,omitempty"`
-				Segment3TagId  *int64  `json:"segment_3_tag_id,omitempty"`
-				TagIds         *[]int64 `json:"tag_ids,omitempty"`
-				TaxCode        int64   `json:"tax_code"`
-				Vat            *int64  `json:"vat,omitempty"`
+				AccountItemId int64    `json:"account_item_id"`
+				Amount        int64    `json:"amount"`
+				Description   *string  `json:"description,omitempty"`
+				Id            *int64   `json:"id,omitempty"`
+				ItemId        *int64   `json:"item_id,omitempty"`
+				SectionId     *int64   `json:"section_id,omitempty"`
+				Segment1TagId *int64   `json:"segment_1_tag_id,omitempty"`
+				Segment2TagId *int64   `json:"segment_2_tag_id,omitempty"`
+				Segment3TagId *int64   `json:"segment_3_tag_id,omitempty"`
+				TagIds        *[]int64 `json:"tag_ids,omitempty"`
+				TaxCode       int64    `json:"tax_code"`
+				Vat           *int64   `json:"vat,omitempty"`
 			}{
 				{
 					AccountItemId: accountItemID,
