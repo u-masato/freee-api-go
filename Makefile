@@ -1,4 +1,4 @@
-.PHONY: help build test lint generate update-openapi clean coverage
+.PHONY: help build test lint fmt generate update-openapi clean coverage
 
 # Default target
 help:
@@ -6,6 +6,7 @@ help:
 	@echo "  make build           - Build all packages"
 	@echo "  make test            - Run all tests"
 	@echo "  make lint            - Run golangci-lint"
+	@echo "  make fmt             - Format code with go fmt"
 	@echo "  make generate        - Generate code from OpenAPI spec"
 	@echo "  make update-openapi  - Download latest OpenAPI specification"
 	@echo "  make clean           - Clean build artifacts"
@@ -25,6 +26,11 @@ test:
 lint:
 	@echo "Running linter..."
 	@golangci-lint run --timeout=5m
+
+# Format code
+fmt:
+	@echo "Formatting code..."
+	@go fmt ./...
 
 # Generate code from OpenAPI spec
 generate:

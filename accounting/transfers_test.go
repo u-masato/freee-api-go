@@ -143,12 +143,12 @@ func TestTransfersService_List(t *testing.T) {
 
 func TestTransfersService_Get(t *testing.T) {
 	tests := []struct {
-		name          string
-		companyID     int64
-		transferID    int64
-		mockStatus    int
-		mockBody      string
-		wantErr       bool
+		name           string
+		companyID      int64
+		transferID     int64
+		mockStatus     int
+		mockBody       string
+		wantErr        bool
 		wantTransferID int64
 	}{
 		{

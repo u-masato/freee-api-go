@@ -228,6 +228,7 @@ func (s *PartnersService) Delete(ctx context.Context, companyID int64, partnerID
 //	if err := iter.Err(); err != nil {
 //	    log.Fatal(err)
 //	}
+//
 // PartnerListItem is the type for individual partner items in list responses.
 // This is a type alias for the inline struct used in PartnersResponse.
 type PartnerListItem = struct {
@@ -251,27 +252,27 @@ type PartnerListItem = struct {
 	NameKana                     *string `json:"name_kana"`
 	OrgCode                      *int64  `json:"org_code"`
 	PartnerBankAccountAttributes *struct {
-		AccountName     *string                                                           `json:"account_name"`
-		AccountNumber   *string                                                           `json:"account_number"`
+		AccountName     *string                                                              `json:"account_name"`
+		AccountNumber   *string                                                              `json:"account_number"`
 		AccountType     *gen.PartnersResponsePartnersPartnerBankAccountAttributesAccountType `json:"account_type"`
-		BankCode        *string                                                           `json:"bank_code"`
-		BankName        *string                                                           `json:"bank_name"`
-		BankNameKana    *string                                                           `json:"bank_name_kana"`
-		BranchCode      *string                                                           `json:"branch_code"`
-		BranchKana      *string                                                           `json:"branch_kana"`
-		BranchName      *string                                                           `json:"branch_name"`
-		LongAccountName *string                                                           `json:"long_account_name"`
+		BankCode        *string                                                              `json:"bank_code"`
+		BankName        *string                                                              `json:"bank_name"`
+		BankNameKana    *string                                                              `json:"bank_name_kana"`
+		BranchCode      *string                                                              `json:"branch_code"`
+		BranchKana      *string                                                              `json:"branch_kana"`
+		BranchName      *string                                                              `json:"branch_name"`
+		LongAccountName *string                                                              `json:"long_account_name"`
 	} `json:"partner_bank_account_attributes,omitempty"`
 	PartnerDocSettingAttributes *struct {
 		SendingMethod *gen.PartnersResponsePartnersPartnerDocSettingAttributesSendingMethod `json:"sending_method"`
 	} `json:"partner_doc_setting_attributes,omitempty"`
-	PayerWalletableId       *int64                                           `json:"payer_walletable_id"`
-	Phone                   *string                                          `json:"phone"`
-	QualifiedInvoiceIssuer  *bool                                            `json:"qualified_invoice_issuer,omitempty"`
-	Shortcut1               *string                                          `json:"shortcut1"`
-	Shortcut2               *string                                          `json:"shortcut2"`
+	PayerWalletableId       *int64                                               `json:"payer_walletable_id"`
+	Phone                   *string                                              `json:"phone"`
+	QualifiedInvoiceIssuer  *bool                                                `json:"qualified_invoice_issuer,omitempty"`
+	Shortcut1               *string                                              `json:"shortcut1"`
+	Shortcut2               *string                                              `json:"shortcut2"`
 	TransferFeeHandlingSide *gen.PartnersResponsePartnersTransferFeeHandlingSide `json:"transfer_fee_handling_side,omitempty"`
-	UpdateDate              string                                           `json:"update_date"`
+	UpdateDate              string                                               `json:"update_date"`
 }
 
 func (s *PartnersService) ListIter(ctx context.Context, companyID int64, opts *ListPartnersOptions) Iterator[PartnerListItem] {

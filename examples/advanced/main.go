@@ -45,7 +45,7 @@ import (
 )
 
 const (
-	// tokenFile is the path to the saved OAuth2 token
+	// tokenFile is the path to the saved OAuth2 token.
 	tokenFile = "../oauth/token.json"
 )
 

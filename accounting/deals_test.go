@@ -395,7 +395,7 @@ func TestDealsService_Delete(t *testing.T) {
 	}
 }
 
-// Helper functions
+// Helper functions.
 func stringPtr(s string) *string {
 	return &s
 }

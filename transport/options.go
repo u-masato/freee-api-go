@@ -56,7 +56,7 @@ func WithUserAgent(userAgent string) Option {
 }
 
 // WithDefaultUserAgent sets the default User-Agent for the freee-api-go library.
-// The format is: "freee-api-go/VERSION (+github.com/u-masato/freee-api-go)"
+// The format is: "freee-api-go/VERSION (+github.com/u-masato/freee-api-go)".
 func WithDefaultUserAgent(version string) Option {
 	userAgent := "freee-api-go/" + version + " (+github.com/u-masato/freee-api-go)"
 	return WithUserAgent(userAgent)

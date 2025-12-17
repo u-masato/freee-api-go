@@ -10,7 +10,7 @@ import (
 	"github.com/u-masato/freee-api-go/internal/gen"
 )
 
-// Helper functions for journals tests
+// Helper functions for journals tests.
 func stringPtrJ(s string) *string {
 	return &s
 }
@@ -232,7 +232,6 @@ func TestJournalsService_List(t *testing.T) {
 			}`,
 			wantErr:   false,
 			wantCount: 1,
-			
 		},
 		{
 			name:      "successful list with account and partner filters",
@@ -256,7 +255,6 @@ func TestJournalsService_List(t *testing.T) {
 			}`,
 			wantErr:   false,
 			wantCount: 1,
-			
 		},
 		{
 			name:      "successful list with entry side filter",
@@ -278,7 +276,6 @@ func TestJournalsService_List(t *testing.T) {
 			}`,
 			wantErr:   false,
 			wantCount: 1,
-			
 		},
 		{
 			name:      "successful list with segment filters",
@@ -302,7 +299,6 @@ func TestJournalsService_List(t *testing.T) {
 			}`,
 			wantErr:   false,
 			wantCount: 1,
-			
 		},
 		{
 			name:       "empty result",
@@ -315,7 +311,6 @@ func TestJournalsService_List(t *testing.T) {
 			}`,
 			wantErr:   false,
 			wantCount: 0,
-			
 		},
 	}
 

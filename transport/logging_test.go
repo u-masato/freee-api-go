@@ -123,7 +123,7 @@ func TestMaskSensitiveHeaders(t *testing.T) {
 	masked := maskSensitiveHeaders(headers)
 
 	tests := []struct {
-		header    string
+		header     string
 		shouldMask bool
 	}{
 		{"Content-Type", false},
