@@ -43,9 +43,12 @@
 //
 //   - [DealsService]: 取引の管理 - 収入と支出
 //   - [JournalsService]: 仕訳の管理 - 会計エントリ
+//   - [CompaniesService]: 事業所の管理
 //   - [WalletTxnService]: 口座明細の管理
+//   - [WalletablesService]: 口座の管理
 //   - [TransfersService]: 振替の管理
 //   - [PartnersService]: 取引先の管理
+//   - [AccountItemsService]: 勘定科目の管理
 //
 // 使用例：
 //
@@ -159,7 +162,9 @@ type Client struct {
 	// Service clients (lazy initialization)
 	deals        *DealsService
 	journals     *JournalsService
+	companies    *CompaniesService
 	walletTxn    *WalletTxnService
+	walletables  *WalletablesService
 	transfers    *TransfersService
 	partners     *PartnersService
 	accountItems *AccountItemsService
@@ -231,6 +236,24 @@ func (c *Client) Journals() *JournalsService {
 	return c.journals
 }
 
+// Companies returns the CompaniesService for managing companies (事業所).
+//
+// The service is lazily initialized on first access.
+//
+// Example:
+//
+//	companies := accountingClient.Companies()
+//	list, err := companies.List(ctx)
+func (c *Client) Companies() *CompaniesService {
+	if c.companies == nil {
+		c.companies = &CompaniesService{
+			client:    c.client,
+			genClient: c.genClient,
+		}
+	}
+	return c.companies
+}
+
 // WalletTxns returns the WalletTxnService for managing wallet transactions (口座明細).
 //
 // The service is lazily initialized on first access.
@@ -247,6 +270,24 @@ func (c *Client) WalletTxns() *WalletTxnService {
 		}
 	}
 	return c.walletTxn
+}
+
+// Walletables returns the WalletablesService for managing walletables (口座).
+//
+// The service is lazily initialized on first access.
+//
+// Example:
+//
+//	walletables := accountingClient.Walletables()
+//	list, err := walletables.List(ctx, companyID, nil)
+func (c *Client) Walletables() *WalletablesService {
+	if c.walletables == nil {
+		c.walletables = &WalletablesService{
+			client:    c.client,
+			genClient: c.genClient,
+		}
+	}
+	return c.walletables
 }
 
 // Transfers returns the TransfersService for managing transfers (取引（振替）).
