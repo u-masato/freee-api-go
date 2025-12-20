@@ -40,6 +40,22 @@ type JournalsService struct {
 	genClient *gen.ClientWithResponses
 }
 
+// CompaniesService provides operations for managing companies (事業所).
+//
+// Companies represent organizations the authenticated user belongs to.
+//
+// All methods require a context.Context for cancellation and timeouts.
+//
+// Example:
+//
+//	companies := accountingClient.Companies()
+//	list, err := companies.List(ctx)
+//	company, err := companies.Get(ctx, companyID, nil)
+type CompaniesService struct {
+	client    *client.Client
+	genClient *gen.ClientWithResponses
+}
+
 // WalletTxnService provides operations for managing wallet transactions (口座明細).
 //
 // Wallet transactions represent entries in bank accounts, credit cards, and other
@@ -54,6 +70,23 @@ type JournalsService struct {
 //	// Future: list, err := walletTxns.List(ctx, companyID, walletableID, nil)
 //	// Future: txn, err := walletTxns.Get(ctx, companyID, txnID)
 type WalletTxnService struct {
+	client    *client.Client
+	genClient *gen.ClientWithResponses
+}
+
+// WalletablesService provides operations for managing walletables (口座).
+//
+// Walletables represent bank accounts, credit cards, and other payment accounts
+// registered in freee. These can be used for transactions and reconciliations.
+//
+// All methods require a context.Context for cancellation and timeouts.
+//
+// Example:
+//
+//	walletables := accountingClient.Walletables()
+//	list, err := walletables.List(ctx, companyID, nil)
+//	walletable, err := walletables.Get(ctx, companyID, "bank_account", walletableID, nil)
+type WalletablesService struct {
 	client    *client.Client
 	genClient *gen.ClientWithResponses
 }

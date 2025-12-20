@@ -129,6 +129,32 @@ func TestClient_Journals(t *testing.T) {
 	}
 }
 
+func TestClient_Companies(t *testing.T) {
+	baseClient := client.NewClient()
+	accountingClient, err := NewClient(baseClient)
+	if err != nil {
+		t.Fatalf("NewClient() error = %v", err)
+	}
+
+	companies1 := accountingClient.Companies()
+	if companies1 == nil {
+		t.Error("Companies() returned nil")
+		return
+	}
+
+	companies2 := accountingClient.Companies()
+	if companies1 != companies2 {
+		t.Error("Companies() returned different instances, expected same instance")
+	}
+
+	if companies1.client == nil {
+		t.Error("CompaniesService.client is nil")
+	}
+	if companies1.genClient == nil {
+		t.Error("CompaniesService.genClient is nil")
+	}
+}
+
 func TestClient_WalletTxns(t *testing.T) {
 	baseClient := client.NewClient()
 	accountingClient, err := NewClient(baseClient)
@@ -155,6 +181,32 @@ func TestClient_WalletTxns(t *testing.T) {
 	}
 	if walletTxns1.genClient == nil {
 		t.Error("WalletTxnService.genClient is nil")
+	}
+}
+
+func TestClient_Walletables(t *testing.T) {
+	baseClient := client.NewClient()
+	accountingClient, err := NewClient(baseClient)
+	if err != nil {
+		t.Fatalf("NewClient() error = %v", err)
+	}
+
+	walletables1 := accountingClient.Walletables()
+	if walletables1 == nil {
+		t.Error("Walletables() returned nil")
+		return
+	}
+
+	walletables2 := accountingClient.Walletables()
+	if walletables1 != walletables2 {
+		t.Error("Walletables() returned different instances, expected same instance")
+	}
+
+	if walletables1.client == nil {
+		t.Error("WalletablesService.client is nil")
+	}
+	if walletables1.genClient == nil {
+		t.Error("WalletablesService.genClient is nil")
 	}
 }
 
@@ -231,7 +283,9 @@ func TestClient_AllServices(t *testing.T) {
 
 	deals := accountingClient.Deals()
 	journals := accountingClient.Journals()
+	companies := accountingClient.Companies()
 	walletTxns := accountingClient.WalletTxns()
+	walletables := accountingClient.Walletables()
 	transfers := accountingClient.Transfers()
 
 	if deals == nil {
@@ -240,8 +294,14 @@ func TestClient_AllServices(t *testing.T) {
 	if journals == nil {
 		t.Error("Journals service is nil")
 	}
+	if companies == nil {
+		t.Error("Companies service is nil")
+	}
 	if walletTxns == nil {
 		t.Error("WalletTxns service is nil")
+	}
+	if walletables == nil {
+		t.Error("Walletables service is nil")
 	}
 	if transfers == nil {
 		t.Error("Transfers service is nil")
